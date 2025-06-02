@@ -1,0 +1,51 @@
+{
+    "logo": "logos/ford.png",
+    "modelos": {
+      "F-150": [
+        { "nombre": "10ª gen", "desde": 1997, "hasta": 2003 },
+        { "nombre": "11ª gen", "desde": 2004, "hasta": 2008 },
+        { "nombre": "12ª gen", "desde": 2009, "hasta": 2014 },
+        { "nombre": "13ª gen", "desde": 2015, "hasta": 2020 },
+        { "nombre": "14ª gen", "desde": 2021, "hasta": 2025 }
+      ],
+      "Ranger": [
+        { "nombre": "1ª gen (internacional)", "desde": 1998, "hasta": 2006 },
+        { "nombre": "2ª gen", "desde": 2006, "hasta": 2011 },
+        { "nombre": "3ª gen (T6)", "desde": 2012, "hasta": 2022 },
+        { "nombre": "4ª gen (T6.2)", "desde": 2023, "hasta": 2025 }
+      ],
+      "Escape": [
+        { "nombre": "1ª gen", "desde": 2001, "hasta": 2007 },
+        { "nombre": "2ª gen", "desde": 2008, "hasta": 2012 },
+        { "nombre": "3ª gen", "desde": 2013, "hasta": 2019 },
+        { "nombre": "4ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Explorer": [
+        { "nombre": "3ª gen", "desde": 2002, "hasta": 2005 },
+        { "nombre": "4ª gen", "desde": 2006, "hasta": 2010 },
+        { "nombre": "5ª gen", "desde": 2011, "hasta": 2019 },
+        { "nombre": "6ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "EcoSport": [
+        { "nombre": "1ª gen", "desde": 2003, "hasta": 2012 },
+        { "nombre": "2ª gen", "desde": 2012, "hasta": 2022 }
+      ],
+      "Fiesta": [
+        { "nombre": "6ª gen", "desde": 2008, "hasta": 2017 },
+        { "nombre": "7ª gen", "desde": 2017, "hasta": 2023 }
+      ],
+      "Focus": [
+        { "nombre": "2ª gen", "desde": 2004, "hasta": 2011 },
+        { "nombre": "3ª gen", "desde": 2011, "hasta": 2018 },
+        { "nombre": "4ª gen", "desde": 2018, "hasta": 2025 }
+      ],
+      "Edge": [
+        { "nombre": "1ª gen", "desde": 2007, "hasta": 2014 },
+        { "nombre": "2ª gen", "desde": 2015, "hasta": 2025 }
+      ],
+      "Maverick": [
+        { "nombre": "1ª gen (pickup compacta)", "desde": 2022, "hasta": 2025 }
+      ]
+    }
+  }
+  

@@ -1,0 +1,37 @@
+{
+    "logo": "logos/byd.png",
+    "modelos": {
+      "F3": [
+        { "nombre": "1ª gen", "desde": 2005, "hasta": 2014 },
+        { "nombre": "2ª gen", "desde": 2015, "hasta": 2025 }
+      ],
+      "S6": [
+        { "nombre": "1ª gen", "desde": 2011, "hasta": 2018 }
+      ],
+      "Tang": [
+        { "nombre": "1ª gen", "desde": 2015, "hasta": 2020 },
+        { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Song": [
+        { "nombre": "1ª gen", "desde": 2015, "hasta": 2019 },
+        { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "Qin": [
+        { "nombre": "1ª gen", "desde": 2014, "hasta": 2018 },
+        { "nombre": "2ª gen", "desde": 2018, "hasta": 2025 }
+      ],
+      "Han": [
+        { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Dolphin": [
+        { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+      ],
+      "Yuan Plus (Atto 3)": [
+        { "nombre": "1ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "Seal": [
+        { "nombre": "1ª gen", "desde": 2022, "hasta": 2025 }
+      ]
+    }
+  }
+  

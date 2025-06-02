@@ -1,0 +1,42 @@
+{
+    "logo": "logos/lexus.png",
+    "modelos": {
+      "IS": [
+        { "nombre": "1ª gen (XE10)", "desde": 1998, "hasta": 2005 },
+        { "nombre": "2ª gen (XE20)", "desde": 2005, "hasta": 2013 },
+        { "nombre": "3ª gen (XE30)", "desde": 2013, "hasta": 2020 },
+        { "nombre": "4ª gen (XE40)", "desde": 2020, "hasta": 2025 }
+      ],
+      "ES": [
+        { "nombre": "5ª gen (XV30)", "desde": 2001, "hasta": 2006 },
+        { "nombre": "6ª gen (XV40)", "desde": 2006, "hasta": 2012 },
+        { "nombre": "7ª gen (XV60)", "desde": 2012, "hasta": 2018 },
+        { "nombre": "8ª gen (XV70)", "desde": 2018, "hasta": 2025 }
+      ],
+      "RX": [
+        { "nombre": "1ª gen", "desde": 1998, "hasta": 2003 },
+        { "nombre": "2ª gen", "desde": 2003, "hasta": 2009 },
+        { "nombre": "3ª gen", "desde": 2009, "hasta": 2015 },
+        { "nombre": "4ª gen", "desde": 2015, "hasta": 2022 },
+        { "nombre": "5ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "NX": [
+        { "nombre": "1ª gen", "desde": 2014, "hasta": 2021 },
+        { "nombre": "2ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "UX": [
+        { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+      ],
+      "GX": [
+        { "nombre": "1ª gen", "desde": 2002, "hasta": 2009 },
+        { "nombre": "2ª gen", "desde": 2010, "hasta": 2023 },
+        { "nombre": "3ª gen", "desde": 2024, "hasta": 2025 }
+      ],
+      "LX": [
+        { "nombre": "2ª gen (UZJ100)", "desde": 1998, "hasta": 2007 },
+        { "nombre": "3ª gen (UZJ200)", "desde": 2008, "hasta": 2021 },
+        { "nombre": "4ª gen (J310)", "desde": 2022, "hasta": 2025 }
+      ]
+    }
+  }
+  

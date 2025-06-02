@@ -1,0 +1,103 @@
+{
+  "logo": "logos/hyundai.png",
+  "modelos": {
+    "Accent": [
+      { "nombre": "1ª gen (X3)", "desde": 1994, "hasta": 1999 },
+      { "nombre": "2ª gen (LC)", "desde": 2000, "hasta": 2005 },
+      { "nombre": "3ª gen (MC)", "desde": 2006, "hasta": 2010 },
+      { "nombre": "4ª gen (RB)", "desde": 2011, "hasta": 2017 },
+      { "nombre": "5ª gen (HC/YC)", "desde": 2018, "hasta": 2022 },
+      { "nombre": "6ª gen (BN7)", "desde": 2023, "hasta": 2025 }
+    ],
+    "Accent Blue": [
+      { "nombre": "Variante del Accent RB", "desde": 2011, "hasta": 2017 }
+    ],
+    "Excel": [
+      { "nombre": "1ª gen", "desde": 1985, "hasta": 1989 },
+      { "nombre": "2ª gen", "desde": 1990, "hasta": 1994 },
+      { "nombre": "3ª gen", "desde": 1994, "hasta": 2000 }
+    ],
+    "Elantra": [
+      { "nombre": "1ª gen (J1)", "desde": 1990, "hasta": 1995 },
+      { "nombre": "2ª gen (J2)", "desde": 1996, "hasta": 2000 },
+      { "nombre": "3ª gen (XD)", "desde": 2001, "hasta": 2006 },
+      { "nombre": "4ª gen (HD)", "desde": 2007, "hasta": 2010 },
+      { "nombre": "5ª gen (MD/UD)", "desde": 2011, "hasta": 2015 },
+      { "nombre": "6ª gen (AD)", "desde": 2016, "hasta": 2020 },
+      { "nombre": "7ª gen (CN7)", "desde": 2021, "hasta": 2025 }
+    ],
+    "Grand i10": [
+      { "nombre": "1ª gen", "desde": 2013, "hasta": 2019 },
+      { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "i10": [
+      { "nombre": "1ª gen (PA)", "desde": 2007, "hasta": 2013 },
+      { "nombre": "2ª gen (IA)", "desde": 2014, "hasta": 2019 },
+      { "nombre": "3ª gen (AC3)", "desde": 2020, "hasta": 2025 }
+    ],
+    "i20": [
+      { "nombre": "1ª gen (PB)", "desde": 2008, "hasta": 2014 },
+      { "nombre": "2ª gen (GB)", "desde": 2014, "hasta": 2020 },
+      { "nombre": "3ª gen (BC3)", "desde": 2021, "hasta": 2025 }
+    ],
+    "Tucson": [
+      { "nombre": "1ª gen (JM)", "desde": 2004, "hasta": 2009 },
+      { "nombre": "2ª gen (LM)", "desde": 2010, "hasta": 2015 },
+      { "nombre": "3ª gen (TL)", "desde": 2016, "hasta": 2020 },
+      { "nombre": "4ª gen (NX4)", "desde": 2021, "hasta": 2025 }
+    ],
+    "Santa Fe": [
+      { "nombre": "1ª gen", "desde": 2000, "hasta": 2006 },
+      { "nombre": "2ª gen", "desde": 2007, "hasta": 2012 },
+      { "nombre": "3ª gen", "desde": 2013, "hasta": 2018 },
+      { "nombre": "4ª gen", "desde": 2019, "hasta": 2023 },
+      { "nombre": "5ª gen", "desde": 2024, "hasta": 2025 }
+    ],
+    "Creta": [
+      { "nombre": "1ª gen", "desde": 2015, "hasta": 2020 },
+      { "nombre": "2ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "Kona": [
+      { "nombre": "1ª gen", "desde": 2017, "hasta": 2023 },
+      { "nombre": "2ª gen", "desde": 2024, "hasta": 2025 }
+    ],
+    "Venue": [
+      { "nombre": "1ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "Palisade": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "Terracan": [
+      { "nombre": "1ª gen", "desde": 2001, "hasta": 2007 }
+    ],
+    "Galloper": [
+      { "nombre": "1ª gen", "desde": 1991, "hasta": 2003 }
+    ],
+    "Getz": [
+      { "nombre": "1ª gen", "desde": 2002, "hasta": 2011 }
+    ],
+    "Veloster": [
+      { "nombre": "1ª gen", "desde": 2011, "hasta": 2017 },
+      { "nombre": "2ª gen", "desde": 2018, "hasta": 2022 }
+    ],
+    "Starex / H1": [
+      { "nombre": "1ª gen", "desde": 1997, "hasta": 2007 },
+      { "nombre": "2ª gen", "desde": 2007, "hasta": 2020 }
+    ],
+    "Staria": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "H100": [
+      { "nombre": "1ª gen", "desde": 1993, "hasta": 2025 }
+    ],
+    "Bayon": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "IONIQ": [
+      { "nombre": "1ª gen", "desde": 2016, "hasta": 2022 }
+    ],
+    "IONIQ 5": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ]
+  }
+}

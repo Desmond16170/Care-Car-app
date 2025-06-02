@@ -1,0 +1,37 @@
+{
+    "logo": "logos/seat.png",
+    "modelos": {
+      "Ibiza": [
+        { "nombre": "1ª gen", "desde": 1984, "hasta": 1993 },
+        { "nombre": "2ª gen", "desde": 1993, "hasta": 2002 },
+        { "nombre": "3ª gen", "desde": 2002, "hasta": 2008 },
+        { "nombre": "4ª gen", "desde": 2008, "hasta": 2017 },
+        { "nombre": "5ª gen", "desde": 2017, "hasta": 2025 }
+      ],
+      "León": [
+        { "nombre": "1ª gen", "desde": 1999, "hasta": 2005 },
+        { "nombre": "2ª gen", "desde": 2005, "hasta": 2012 },
+        { "nombre": "3ª gen", "desde": 2012, "hasta": 2020 },
+        { "nombre": "4ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Toledo": [
+        { "nombre": "1ª gen", "desde": 1991, "hasta": 1999 },
+        { "nombre": "2ª gen", "desde": 1999, "hasta": 2004 },
+        { "nombre": "3ª gen", "desde": 2004, "hasta": 2009 },
+        { "nombre": "4ª gen", "desde": 2012, "hasta": 2019 }
+      ],
+      "Arona": [
+        { "nombre": "1ª gen", "desde": 2017, "hasta": 2025 }
+      ],
+      "Ateca": [
+        { "nombre": "1ª gen", "desde": 2016, "hasta": 2025 }
+      ],
+      "Altea": [
+        { "nombre": "1ª gen", "desde": 2004, "hasta": 2015 }
+      ],
+      "Mii": [
+        { "nombre": "1ª gen", "desde": 2011, "hasta": 2021 }
+      ]
+    }
+  }
+  

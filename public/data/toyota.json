@@ -1,0 +1,174 @@
+{
+    "logo": "logos/toyota.png",
+    "modelos": {
+      "Corolla": {
+        "generaciones": [
+          { "nombre": "E10", "desde": 1966, "hasta": 1970 },
+          { "nombre": "E20", "desde": 1970, "hasta": 1974 },
+          { "nombre": "E30/E40/E50/E60", "desde": 1974, "hasta": 1979 },
+          { "nombre": "E70", "desde": 1979, "hasta": 1983 },
+          { "nombre": "E80", "desde": 1983, "hasta": 1987 },
+          { "nombre": "E90", "desde": 1987, "hasta": 1991 },
+          { "nombre": "E100", "desde": 1991, "hasta": 1995 },
+          { "nombre": "E110", "desde": 1995, "hasta": 2000 },
+          { "nombre": "E120/E130", "desde": 2000, "hasta": 2006 },
+          { "nombre": "E140/E150", "desde": 2006, "hasta": 2013 },
+          { "nombre": "E160/E170/E180", "desde": 2013, "hasta": 2018 },
+          { "nombre": "E210", "desde": 2018, "hasta": 2025 }
+        ]
+      },
+      "RAV4": {
+        "generaciones": [
+          { "nombre": "XA10", "desde": 1994, "hasta": 2000 },
+          { "nombre": "XA20", "desde": 2000, "hasta": 2005 },
+          { "nombre": "XA30", "desde": 2005, "hasta": 2012 },
+          { "nombre": "XA40", "desde": 2012, "hasta": 2018 },
+          { "nombre": "XA50", "desde": 2018, "hasta": 2025 }
+        ]
+      },
+      "Yaris": {
+        "generaciones": [
+          { "nombre": "XP10/XP20", "desde": 1999, "hasta": 2005 },
+          { "nombre": "XP90", "desde": 2005, "hasta": 2011 },
+          { "nombre": "XP130/XP150", "desde": 2011, "hasta": 2020 },
+          { "nombre": "XP210", "desde": 2020, "hasta": 2025 }
+        ]
+      },
+      "Land Cruiser": {
+        "generaciones": [
+          { "nombre": "40 Series", "desde": 1960, "hasta": 1984 },
+          { "nombre": "60 Series", "desde": 1980, "hasta": 1990 },
+          { "nombre": "80 Series", "desde": 1990, "hasta": 1997 },
+          { "nombre": "100 Series", "desde": 1998, "hasta": 2007 },
+          { "nombre": "200 Series", "desde": 2008, "hasta": 2021 },
+          { "nombre": "300 Series", "desde": 2021, "hasta": 2025 }
+        ]
+      },
+      "Prado": {
+        "generaciones": [
+          { "nombre": "J90", "desde": 1996, "hasta": 2002 },
+          { "nombre": "J120", "desde": 2002, "hasta": 2009 },
+          { "nombre": "J150", "desde": 2009, "hasta": 2023 },
+          { "nombre": "J250", "desde": 2023, "hasta": 2025 }
+        ]
+      },
+      "Hilux": {
+        "generaciones": [
+          { "nombre": "N10", "desde": 1968, "hasta": 1972 },
+          { "nombre": "N20", "desde": 1972, "hasta": 1978 },
+          { "nombre": "N30/N40", "desde": 1978, "hasta": 1983 },
+          { "nombre": "N50/N60/N70", "desde": 1983, "hasta": 1988 },
+          { "nombre": "N80/N90/N100/N110", "desde": 1988, "hasta": 1997 },
+          { "nombre": "N140/N150/N160/N170", "desde": 1997, "hasta": 2005 },
+          { "nombre": "AN10/AN20/AN30", "desde": 2005, "hasta": 2015 },
+          { "nombre": "AN110/AN120/AN130", "desde": 2015, "hasta": 2025 }
+        ]
+      },
+      "Auris": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2006, "hasta": 2012 },
+          { "nombre": "2ª gen", "desde": 2012, "hasta": 2018 }
+        ]
+      },
+      "Avanza": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2003, "hasta": 2011 },
+          { "nombre": "2ª gen", "desde": 2011, "hasta": 2021 },
+          { "nombre": "3ª gen", "desde": 2022, "hasta": 2025 }
+        ]
+      },
+      "FJ Cruiser": {
+        "generaciones": [
+          { "nombre": "Única generación", "desde": 2006, "hasta": 2017 }
+        ]
+      },
+      "4Runner": {
+        "generaciones": [
+          { "nombre": "3ª gen", "desde": 1995, "hasta": 2002 },
+          { "nombre": "4ª gen", "desde": 2002, "hasta": 2009 },
+          { "nombre": "5ª gen", "desde": 2009, "hasta": 2025 }
+        ]
+      },
+      "Tacoma": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 1995, "hasta": 2004 },
+          { "nombre": "2ª gen", "desde": 2005, "hasta": 2015 },
+          { "nombre": "3ª gen", "desde": 2016, "hasta": 2023 },
+          { "nombre": "4ª gen", "desde": 2024, "hasta": 2025 }
+        ]
+      },
+      "Sienna": {
+        "generaciones": [
+          { "nombre": "2ª gen", "desde": 2004, "hasta": 2010 },
+          { "nombre": "3ª gen", "desde": 2010, "hasta": 2020 },
+          { "nombre": "4ª gen", "desde": 2021, "hasta": 2025 }
+        ]
+      },
+      "Tundra": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2000, "hasta": 2006 },
+          { "nombre": "2ª gen", "desde": 2007, "hasta": 2021 },
+          { "nombre": "3ª gen", "desde": 2022, "hasta": 2025 }
+        ]
+      },
+      "Fortuner": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2004, "hasta": 2015 },
+          { "nombre": "2ª gen", "desde": 2015, "hasta": 2025 }
+        ]
+      },
+      "Rush": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+        ]
+      },
+      "Vitz": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 1999, "hasta": 2005 }
+        ]
+      },
+      "Ipsum": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 1995, "hasta": 2001 }
+        ]
+      },
+      "Noah": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2001, "hasta": 2007 }
+        ]
+      },
+      "Harrier": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 1997, "hasta": 2003 }
+        ]
+      },
+      "Crown": {
+        "generaciones": [
+          { "nombre": "13ª gen", "desde": 2008, "hasta": 2012 }
+        ]
+      },
+      "Premio": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2001, "hasta": 2007 }
+        ]
+      },
+      "Probox": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2002, "hasta": 2014 }
+        ]
+      },
+      "Hiace": {
+        "generaciones": [
+          { "nombre": "4ª gen", "desde": 1989, "hasta": 2004 },
+          { "nombre": "5ª gen", "desde": 2004, "hasta": 2019 },
+          { "nombre": "6ª gen", "desde": 2019, "hasta": 2025 }
+        ]
+      },
+      "Succeed": {
+        "generaciones": [
+          { "nombre": "1ª gen", "desde": 2002, "hasta": 2020 }
+        ]
+      }
+    }
+  }
+  

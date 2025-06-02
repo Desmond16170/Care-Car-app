@@ -1,0 +1,53 @@
+{
+    "logo": "logos/isuzu.png",
+    "modelos": {
+      "D-Max": [
+        { "nombre": "1ª gen", "desde": 2002, "hasta": 2012 },
+        { "nombre": "2ª gen", "desde": 2012, "hasta": 2019 },
+        { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "KB": [
+        { "nombre": "1ª gen (Faster rebadge)", "desde": 1972, "hasta": 1980 },
+        { "nombre": "2ª gen", "desde": 1980, "hasta": 1988 },
+        { "nombre": "3ª gen", "desde": 1988, "hasta": 1997 },
+        { "nombre": "4ª gen", "desde": 1997, "hasta": 2002 },
+        { "nombre": "5ª gen (D-Max basado)", "desde": 2002, "hasta": 2020 }
+      ],
+      "MU-X": [
+        { "nombre": "1ª gen", "desde": 2013, "hasta": 2020 },
+        { "nombre": "2ª gen", "desde": 2021, "hasta": 2025 }
+      ],
+      "Trooper": [
+        { "nombre": "1ª gen", "desde": 1981, "hasta": 1991 },
+        { "nombre": "2ª gen", "desde": 1991, "hasta": 2002 }
+      ],
+      "Rodeo": [
+        { "nombre": "1ª gen", "desde": 1991, "hasta": 1997 },
+        { "nombre": "2ª gen", "desde": 1998, "hasta": 2004 }
+      ],
+      "Amigo": [
+        { "nombre": "1ª gen", "desde": 1989, "hasta": 1994 },
+        { "nombre": "2ª gen", "desde": 1998, "hasta": 2004 }
+      ],
+      "Faster": [
+        { "nombre": "1ª gen", "desde": 1972, "hasta": 1980 },
+        { "nombre": "2ª gen", "desde": 1980, "hasta": 1988 },
+        { "nombre": "3ª gen", "desde": 1988, "hasta": 2002 }
+      ],
+      "Gemini": [
+        { "nombre": "1ª gen", "desde": 1974, "hasta": 1979 },
+        { "nombre": "2ª gen", "desde": 1980, "hasta": 1987 }
+      ],
+      "Impulse": [
+        { "nombre": "1ª gen", "desde": 1983, "hasta": 1989 },
+        { "nombre": "2ª gen", "desde": 1990, "hasta": 1992 }
+      ],
+      "NKR": [
+        { "nombre": "Serie N", "desde": 1985, "hasta": 2025 }
+      ],
+      "NPR": [
+        { "nombre": "Serie N", "desde": 1985, "hasta": 2025 }
+      ]
+    }
+  }
+  

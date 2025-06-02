@@ -1,0 +1,68 @@
+{
+    "logo": "logos/mercedes_benz.png",
+    "modelos": {
+      "Clase A": [
+        { "nombre": "W168", "desde": 1997, "hasta": 2004 },
+        { "nombre": "W169", "desde": 2004, "hasta": 2012 },
+        { "nombre": "W176", "desde": 2012, "hasta": 2018 },
+        { "nombre": "W177", "desde": 2018, "hasta": 2025 }
+      ],
+      "Clase B": [
+        { "nombre": "W245", "desde": 2005, "hasta": 2011 },
+        { "nombre": "W246", "desde": 2011, "hasta": 2018 },
+        { "nombre": "W247", "desde": 2019, "hasta": 2025 }
+      ],
+      "Clase C": [
+        { "nombre": "W202", "desde": 1993, "hasta": 2000 },
+        { "nombre": "W203", "desde": 2000, "hasta": 2007 },
+        { "nombre": "W204", "desde": 2007, "hasta": 2014 },
+        { "nombre": "W205", "desde": 2014, "hasta": 2021 },
+        { "nombre": "W206", "desde": 2021, "hasta": 2025 }
+      ],
+      "Clase E": [
+        { "nombre": "W124", "desde": 1984, "hasta": 1996 },
+        { "nombre": "W210", "desde": 1995, "hasta": 2002 },
+        { "nombre": "W211", "desde": 2002, "hasta": 2009 },
+        { "nombre": "W212", "desde": 2009, "hasta": 2016 },
+        { "nombre": "W213", "desde": 2016, "hasta": 2023 },
+        { "nombre": "W214", "desde": 2023, "hasta": 2025 }
+      ],
+      "Clase S": [
+        { "nombre": "W140", "desde": 1991, "hasta": 1998 },
+        { "nombre": "W220", "desde": 1998, "hasta": 2005 },
+        { "nombre": "W221", "desde": 2005, "hasta": 2013 },
+        { "nombre": "W222", "desde": 2013, "hasta": 2020 },
+        { "nombre": "W223", "desde": 2020, "hasta": 2025 }
+      ],
+      "GLA": [
+        { "nombre": "1ª gen (X156)", "desde": 2014, "hasta": 2019 },
+        { "nombre": "2ª gen (H247)", "desde": 2020, "hasta": 2025 }
+      ],
+      "GLB": [
+        { "nombre": "1ª gen (X247)", "desde": 2019, "hasta": 2025 }
+      ],
+      "GLC": [
+        { "nombre": "1ª gen (X253)", "desde": 2015, "hasta": 2022 },
+        { "nombre": "2ª gen (X254)", "desde": 2022, "hasta": 2025 }
+      ],
+      "GLE": [
+        { "nombre": "ML W163", "desde": 1997, "hasta": 2005 },
+        { "nombre": "ML W164", "desde": 2005, "hasta": 2011 },
+        { "nombre": "ML W166", "desde": 2011, "hasta": 2015 },
+        { "nombre": "GLE W166", "desde": 2015, "hasta": 2019 },
+        { "nombre": "GLE W167", "desde": 2019, "hasta": 2025 }
+      ],
+      "GLS": [
+        { "nombre": "GL X164", "desde": 2006, "hasta": 2012 },
+        { "nombre": "GL X166", "desde": 2012, "hasta": 2016 },
+        { "nombre": "GLS X166", "desde": 2016, "hasta": 2019 },
+        { "nombre": "GLS X167", "desde": 2019, "hasta": 2025 }
+      ],
+      "Sprinter": [
+        { "nombre": "1ª gen", "desde": 1995, "hasta": 2006 },
+        { "nombre": "2ª gen", "desde": 2006, "hasta": 2018 },
+        { "nombre": "3ª gen", "desde": 2018, "hasta": 2025 }
+      ]
+    }
+  }
+  

@@ -1,0 +1,37 @@
+{
+    "logo": "logos/dodge.png",
+    "modelos": {
+      "Journey": [
+        { "nombre": "1ª gen", "desde": 2008, "hasta": 2020 }
+      ],
+      "Durango": [
+        { "nombre": "1ª gen", "desde": 1998, "hasta": 2003 },
+        { "nombre": "2ª gen", "desde": 2004, "hasta": 2009 },
+        { "nombre": "3ª gen", "desde": 2011, "hasta": 2025 }
+      ],
+      "Charger": [
+        { "nombre": "6ª gen", "desde": 2006, "hasta": 2010 },
+        { "nombre": "7ª gen", "desde": 2011, "hasta": 2023 }
+      ],
+      "Challenger": [
+        { "nombre": "3ª gen", "desde": 2008, "hasta": 2023 }
+      ],
+      "Caliber": [
+        { "nombre": "1ª gen", "desde": 2006, "hasta": 2012 }
+      ],
+      "Ram 700": [
+        { "nombre": "1ª gen", "desde": 2014, "hasta": 2020 },
+        { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Neon": [
+        { "nombre": "1ª gen", "desde": 1994, "hasta": 1999 },
+        { "nombre": "2ª gen", "desde": 2000, "hasta": 2005 },
+        { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Attitude": [
+        { "nombre": "3ª gen", "desde": 2014, "hasta": 2020 },
+        { "nombre": "4ª gen", "desde": 2020, "hasta": 2025 }
+      ]
+    }
+  }
+  

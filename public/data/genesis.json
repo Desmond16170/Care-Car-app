@@ -1,0 +1,23 @@
+{
+    "logo": "logos/genesis.png",
+    "modelos": {
+      "G70": [
+        { "nombre": "1ª gen", "desde": 2017, "hasta": 2025 }
+      ],
+      "G80": [
+        { "nombre": "1ª gen", "desde": 2016, "hasta": 2020 },
+        { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "G90": [
+        { "nombre": "1ª gen", "desde": 2016, "hasta": 2021 },
+        { "nombre": "2ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "GV70": [
+        { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "GV80": [
+        { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+      ]
+    }
+  }
+  

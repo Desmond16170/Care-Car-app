@@ -1,0 +1,30 @@
+{
+  "logo": "logos/geely.png",
+  "modelos": {
+    "CK": [
+      { "nombre": "1ª gen", "desde": 2005, "hasta": 2016 }
+    ],
+    "GC2": [
+      { "nombre": "1ª gen", "desde": 2008, "hasta": 2015 }
+    ],
+    "MK": [
+      { "nombre": "1ª gen", "desde": 2006, "hasta": 2012 }
+    ],
+    "Emgrand 7": [
+      { "nombre": "1ª gen", "desde": 2009, "hasta": 2016 },
+      { "nombre": "2ª gen", "desde": 2016, "hasta": 2025 }
+    ],
+    "Coolray": [
+      { "nombre": "1ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "Azkarra": [
+      { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "Tugella": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "Okavango": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+    "logo": "logos/faw.png",
+    "modelos": {
+      "Vita": [
+        { "nombre": "1ª gen", "desde": 2006, "hasta": 2011 }
+      ],
+      "Besturn B50": [
+        { "nombre": "1ª gen", "desde": 2009, "hasta": 2016 }
+      ],
+      "Oley": [
+        { "nombre": "1ª gen", "desde": 2012, "hasta": 2017 }
+      ],
+      "J6": [
+        { "nombre": "1ª gen", "desde": 2008, "hasta": 2013 }
+      ],
+      "Cargo Truck": [
+        { "nombre": "1ª gen", "desde": 2005, "hasta": 2025 }
+      ],
+      "Mini Truck": [
+        { "nombre": "1ª gen", "desde": 2010, "hasta": 2025 }
+      ]
+    }
+  }
+  

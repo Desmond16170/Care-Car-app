@@ -1,0 +1,38 @@
+{
+  "logo": "logos/mg.png",
+  "modelos": {
+    "MG 3": [
+      { "nombre": "1ª gen", "desde": 2011, "hasta": 2018 },
+      { "nombre": "2ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "MG 5": [
+      { "nombre": "1ª gen", "desde": 2012, "hasta": 2018 },
+      { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "MG 6": [
+      { "nombre": "1ª gen", "desde": 2010, "hasta": 2016 },
+      { "nombre": "2ª gen", "desde": 2016, "hasta": 2025 }
+    ],
+    "MG ZS": [
+      { "nombre": "1ª gen", "desde": 2017, "hasta": 2025 }
+    ],
+    "MG ZS EV": [
+      { "nombre": "1ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "MG HS": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "MG RX5": [
+      { "nombre": "1ª gen", "desde": 2023, "hasta": 2025 }
+    ],
+    "MG Marvel R": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "MG One": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "MG GT": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ]
+  }
+}

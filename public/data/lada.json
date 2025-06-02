@@ -1,0 +1,28 @@
+{
+    "logo": "logos/lada.png",
+    "modelos": {
+      "Niva": [
+        { "nombre": "1ª gen", "desde": 1977, "hasta": 2020 },
+        { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Samara": [
+        { "nombre": "1ª gen", "desde": 1984, "hasta": 2013 }
+      ],
+      "Riva": [
+        { "nombre": "1ª gen", "desde": 1980, "hasta": 2012 }
+      ],
+      "Granta": [
+        { "nombre": "1ª gen", "desde": 2011, "hasta": 2025 }
+      ],
+      "Vesta": [
+        { "nombre": "1ª gen", "desde": 2015, "hasta": 2025 }
+      ],
+      "Kalina": [
+        { "nombre": "1ª gen", "desde": 2004, "hasta": 2018 }
+      ],
+      "Priora": [
+        { "nombre": "1ª gen", "desde": 2007, "hasta": 2018 }
+      ]
+    }
+  }
+  

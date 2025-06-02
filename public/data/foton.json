@@ -1,0 +1,22 @@
+{
+  "logo": "logos/Foton.png",
+  "modelos": {
+    "Tunland": [
+      { "nombre": "1ª gen", "desde": 2011, "hasta": 2021 },
+      { "nombre": "2ª gen", "desde": 2022, "hasta": 2025 }
+    ],
+    "Tunland G7": [
+      { "nombre": "1ª gen", "desde": 2023, "hasta": 2025 }
+    ],
+    "Aumark": [
+      { "nombre": "1ª gen", "desde": 2004, "hasta": 2018 },
+      { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "View CS2": [
+      { "nombre": "1ª gen", "desde": 2015, "hasta": 2025 }
+    ],
+    "Gratour": [
+      { "nombre": "1ª gen", "desde": 2017, "hasta": 2025 }
+    ]
+  }
+}

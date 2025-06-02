@@ -1,0 +1,22 @@
+{
+  "logo": "logos/dongfeng.png",
+  "modelos": {
+    "AX7": [
+      { "nombre": "1ª gen", "desde": 2014, "hasta": 2018 },
+      { "nombre": "2ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "S30": [
+      { "nombre": "1ª gen", "desde": 2009, "hasta": 2017 }
+    ],
+    "H30 Cross": [
+      { "nombre": "1ª gen", "desde": 2010, "hasta": 2018 }
+    ],
+    "Rich 6": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "Fengon 580": [
+      { "nombre": "1ª gen", "desde": 2016, "hasta": 2021 },
+      { "nombre": "2ª gen", "desde": 2021, "hasta": 2025 }
+    ]
+  }
+}

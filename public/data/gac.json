@@ -1,0 +1,30 @@
+{
+  "logo": "logos/gac.png",
+  "modelos": {
+    "GS3": [
+      { "nombre": "1ª gen", "desde": 2017, "hasta": 2023 },
+      { "nombre": "2ª gen", "desde": 2023, "hasta": 2025 }
+    ],
+    "GS4": [
+      { "nombre": "1ª gen", "desde": 2015, "hasta": 2019 },
+      { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "GS5": [
+      { "nombre": "1ª gen", "desde": 2011, "hasta": 2017 },
+      { "nombre": "2ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "GS8": [
+      { "nombre": "1ª gen", "desde": 2016, "hasta": 2022 },
+      { "nombre": "2ª gen", "desde": 2023, "hasta": 2025 }
+    ],
+    "GN6": [
+      { "nombre": "1ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "GN8": [
+      { "nombre": "1ª gen", "desde": 2017, "hasta": 2025 }
+    ],
+    "Emkoo": [
+      { "nombre": "1ª gen", "desde": 2022, "hasta": 2025 }
+    ]
+  }
+}

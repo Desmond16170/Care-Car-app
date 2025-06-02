@@ -1,0 +1,79 @@
+{
+    "logo": "logos/kia.png",
+    "modelos": {
+      "Rio": [
+        { "nombre": "1ª gen", "desde": 2000, "hasta": 2005 },
+        { "nombre": "2ª gen", "desde": 2005, "hasta": 2011 },
+        { "nombre": "3ª gen", "desde": 2011, "hasta": 2017 },
+        { "nombre": "4ª gen", "desde": 2017, "hasta": 2022 },
+        { "nombre": "5ª gen", "desde": 2023, "hasta": 2025 }
+      ],
+      "Picanto": [
+        { "nombre": "1ª gen", "desde": 2004, "hasta": 2011 },
+        { "nombre": "2ª gen", "desde": 2011, "hasta": 2017 },
+        { "nombre": "3ª gen", "desde": 2017, "hasta": 2025 }
+      ],
+      "Sportage": [
+        { "nombre": "1ª gen", "desde": 1993, "hasta": 2004 },
+        { "nombre": "2ª gen", "desde": 2004, "hasta": 2010 },
+        { "nombre": "3ª gen", "desde": 2010, "hasta": 2015 },
+        { "nombre": "4ª gen", "desde": 2016, "hasta": 2021 },
+        { "nombre": "5ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "Sorento": [
+        { "nombre": "1ª gen", "desde": 2002, "hasta": 2009 },
+        { "nombre": "2ª gen", "desde": 2009, "hasta": 2014 },
+        { "nombre": "3ª gen", "desde": 2015, "hasta": 2020 },
+        { "nombre": "4ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Cerato": [
+        { "nombre": "1ª gen", "desde": 2003, "hasta": 2008 },
+        { "nombre": "2ª gen", "desde": 2008, "hasta": 2013 },
+        { "nombre": "3ª gen", "desde": 2013, "hasta": 2018 },
+        { "nombre": "4ª gen", "desde": 2018, "hasta": 2025 }
+      ],
+      "Optima": [
+        { "nombre": "3ª gen", "desde": 2010, "hasta": 2015 },
+        { "nombre": "4ª gen", "desde": 2015, "hasta": 2020 }
+      ],
+      "K5": [
+        { "nombre": "5ª gen", "desde": 2021, "hasta": 2025 }
+      ],
+      "Soul": [
+        { "nombre": "1ª gen", "desde": 2009, "hasta": 2013 },
+        { "nombre": "2ª gen", "desde": 2014, "hasta": 2019 },
+        { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Carens": [
+        { "nombre": "2ª gen", "desde": 2006, "hasta": 2013 },
+        { "nombre": "3ª gen", "desde": 2013, "hasta": 2018 },
+        { "nombre": "4ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "Seltos": [
+        { "nombre": "1ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "Sonet": [
+        { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Stinger": [
+        { "nombre": "1ª gen", "desde": 2017, "hasta": 2023 }
+      ],
+      "Telluride": [
+        { "nombre": "1ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "Mohave": [
+        { "nombre": "1ª gen", "desde": 2008, "hasta": 2019 },
+        { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Niro": [
+        { "nombre": "1ª gen", "desde": 2016, "hasta": 2021 },
+        { "nombre": "2ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "Carnival": [
+        { "nombre": "2ª gen", "desde": 2006, "hasta": 2014 },
+        { "nombre": "3ª gen", "desde": 2015, "hasta": 2020 },
+        { "nombre": "4ª gen", "desde": 2021, "hasta": 2025 }
+      ]
+    }
+  }
+  

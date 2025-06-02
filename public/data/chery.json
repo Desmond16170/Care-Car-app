@@ -1,0 +1,36 @@
+{
+  "logo": "logos/chery.png",
+  "modelos": {
+    "Tiggo 2": [
+      { "nombre": "1ª gen", "desde": 2016, "hasta": 2020 },
+      { "nombre": "2ª gen (Pro)", "desde": 2021, "hasta": 2025 }
+    ],
+    "Tiggo 3": [
+      { "nombre": "1ª gen", "desde": 2014, "hasta": 2020 }
+    ],
+    "Tiggo 4": [
+      { "nombre": "1ª gen", "desde": 2017, "hasta": 2020 },
+      { "nombre": "2ª gen (Pro)", "desde": 2021, "hasta": 2025 }
+    ],
+    "Tiggo 5": [
+      { "nombre": "1ª gen", "desde": 2013, "hasta": 2018 }
+    ],
+    "Tiggo 7": [
+      { "nombre": "1ª gen", "desde": 2016, "hasta": 2020 },
+      { "nombre": "2ª gen (Pro)", "desde": 2020, "hasta": 2025 }
+    ],
+    "Tiggo 8": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2020 },
+      { "nombre": "2ª gen (Pro)", "desde": 2020, "hasta": 2025 }
+    ],
+    "Arrizo 5": [
+      { "nombre": "1ª gen", "desde": 2016, "hasta": 2022 }
+    ],
+    "Arrizo 6": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "QQ Ice Cream": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ]
+  }
+}

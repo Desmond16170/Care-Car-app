@@ -1,0 +1,46 @@
+{
+  "logo": "logos/volvo.png",
+  "modelos": {
+    "S40": [
+      { "nombre": "1ª gen", "desde": 1995, "hasta": 2004 },
+      { "nombre": "2ª gen", "desde": 2004, "hasta": 2012 }
+    ],
+    "S60": [
+      { "nombre": "1ª gen", "desde": 2000, "hasta": 2009 },
+      { "nombre": "2ª gen", "desde": 2010, "hasta": 2018 },
+      { "nombre": "3ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "S80": [
+      { "nombre": "1ª gen", "desde": 1998, "hasta": 2006 },
+      { "nombre": "2ª gen", "desde": 2006, "hasta": 2016 }
+    ],
+    "S90": [
+      { "nombre": "1ª gen (original)", "desde": 1996, "hasta": 1998 },
+      { "nombre": "2ª gen (moderna)", "desde": 2016, "hasta": 2025 }
+    ],
+    "V40": [
+      { "nombre": "1ª gen", "desde": 1995, "hasta": 2004 },
+      { "nombre": "2ª gen", "desde": 2012, "hasta": 2019 }
+    ],
+    "V60": [
+      { "nombre": "1ª gen", "desde": 2010, "hasta": 2018 },
+      { "nombre": "2ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "XC40": [
+      { "nombre": "1ª gen", "desde": 2017, "hasta": 2025 }
+    ],
+    "XC60": [
+      { "nombre": "1ª gen", "desde": 2008, "hasta": 2017 },
+      { "nombre": "2ª gen", "desde": 2017, "hasta": 2025 }
+    ],
+    "XC70": [
+      { "nombre": "1ª gen", "desde": 1996, "hasta": 2000 },
+      { "nombre": "2ª gen", "desde": 2000, "hasta": 2007 },
+      { "nombre": "3ª gen", "desde": 2007, "hasta": 2016 }
+    ],
+    "XC90": [
+      { "nombre": "1ª gen", "desde": 2002, "hasta": 2014 },
+      { "nombre": "2ª gen", "desde": 2015, "hasta": 2025 }
+    ]
+  }
+}

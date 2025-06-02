@@ -1,0 +1,24 @@
+{
+  "logo": "logos/dfsk.png",
+  "modelos": {
+    "Glory 580": [
+      { "nombre": "1ª gen", "desde": 2016, "hasta": 2021 },
+      { "nombre": "2ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "Glory 500": [
+      { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "Glory ix5": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "C-Series (C31/C32/C35)": [
+      { "nombre": "1ª gen", "desde": 2012, "hasta": 2025 }
+    ],
+    "K-Series (K01/K02/K07)": [
+      { "nombre": "1ª gen", "desde": 2005, "hasta": 2020 }
+    ],
+    "Seres 3": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ]
+  }
+}

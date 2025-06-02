@@ -1,0 +1,38 @@
+{
+    "logo": "logos/land_rover.png",
+    "modelos": {
+      "Defender": [
+        { "nombre": "1ª gen (90/110)", "desde": 1983, "hasta": 2016 },
+        { "nombre": "2ª gen (L663)", "desde": 2020, "hasta": 2025 }
+      ],
+      "Discovery": [
+        { "nombre": "1ª gen", "desde": 1989, "hasta": 1998 },
+        { "nombre": "2ª gen", "desde": 1998, "hasta": 2004 },
+        { "nombre": "3ª gen (LR3)", "desde": 2004, "hasta": 2009 },
+        { "nombre": "4ª gen (LR4)", "desde": 2009, "hasta": 2016 },
+        { "nombre": "5ª gen", "desde": 2017, "hasta": 2025 }
+      ],
+      "Discovery Sport": [
+        { "nombre": "1ª gen", "desde": 2015, "hasta": 2025 }
+      ],
+      "Range Rover": [
+        { "nombre": "3ª gen (L322)", "desde": 2002, "hasta": 2012 },
+        { "nombre": "4ª gen (L405)", "desde": 2012, "hasta": 2021 },
+        { "nombre": "5ª gen (L460)", "desde": 2022, "hasta": 2025 }
+      ],
+      "Range Rover Sport": [
+        { "nombre": "1ª gen", "desde": 2005, "hasta": 2013 },
+        { "nombre": "2ª gen", "desde": 2013, "hasta": 2022 },
+        { "nombre": "3ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "Range Rover Evoque": [
+        { "nombre": "1ª gen", "desde": 2011, "hasta": 2018 },
+        { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "Freelander": [
+        { "nombre": "1ª gen", "desde": 1997, "hasta": 2006 },
+        { "nombre": "2ª gen", "desde": 2006, "hasta": 2015 }
+      ]
+    }
+  }
+  

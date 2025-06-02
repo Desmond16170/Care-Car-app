@@ -1,0 +1,31 @@
+{
+    "logo": "logos/chrysler.png",
+    "modelos": {
+      "300": [
+        { "nombre": "1ª gen", "desde": 2005, "hasta": 2010 },
+        { "nombre": "2ª gen", "desde": 2011, "hasta": 2023 }
+      ],
+      "Pacifica": [
+        { "nombre": "1ª gen", "desde": 2004, "hasta": 2008 },
+        { "nombre": "2ª gen", "desde": 2017, "hasta": 2025 }
+      ],
+      "Town & Country": [
+        { "nombre": "4ª gen", "desde": 2001, "hasta": 2007 },
+        { "nombre": "5ª gen", "desde": 2008, "hasta": 2016 }
+      ],
+      "Neon": [
+        { "nombre": "1ª gen", "desde": 1995, "hasta": 1999 },
+        { "nombre": "2ª gen", "desde": 2000, "hasta": 2005 },
+        { "nombre": "3ª gen", "desde": 2016, "hasta": 2022 }
+      ],
+      "Sebring": [
+        { "nombre": "1ª gen", "desde": 1995, "hasta": 2000 },
+        { "nombre": "2ª gen", "desde": 2001, "hasta": 2006 },
+        { "nombre": "3ª gen", "desde": 2007, "hasta": 2010 }
+      ],
+      "Voyager": [
+        { "nombre": "5ª gen", "desde": 2020, "hasta": 2025 }
+      ]
+    }
+  }
+  

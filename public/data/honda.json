@@ -1,0 +1,74 @@
+{
+    "logo": "logos/honda.png",
+    "modelos": {
+      "Civic": [
+        { "nombre": "1ª gen", "desde": 1972, "hasta": 1979 },
+        { "nombre": "2ª gen", "desde": 1980, "hasta": 1983 },
+        { "nombre": "3ª gen", "desde": 1984, "hasta": 1987 },
+        { "nombre": "4ª gen", "desde": 1988, "hasta": 1991 },
+        { "nombre": "5ª gen", "desde": 1992, "hasta": 1995 },
+        { "nombre": "6ª gen", "desde": 1996, "hasta": 2000 },
+        { "nombre": "7ª gen", "desde": 2001, "hasta": 2005 },
+        { "nombre": "8ª gen", "desde": 2006, "hasta": 2011 },
+        { "nombre": "9ª gen", "desde": 2012, "hasta": 2015 },
+        { "nombre": "10ª gen", "desde": 2016, "hasta": 2021 },
+        { "nombre": "11ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "Accord": [
+        { "nombre": "1ª gen", "desde": 1976, "hasta": 1981 },
+        { "nombre": "2ª gen", "desde": 1982, "hasta": 1985 },
+        { "nombre": "3ª gen", "desde": 1986, "hasta": 1989 },
+        { "nombre": "4ª gen", "desde": 1990, "hasta": 1993 },
+        { "nombre": "5ª gen", "desde": 1994, "hasta": 1997 },
+        { "nombre": "6ª gen", "desde": 1998, "hasta": 2002 },
+        { "nombre": "7ª gen", "desde": 2003, "hasta": 2007 },
+        { "nombre": "8ª gen", "desde": 2008, "hasta": 2012 },
+        { "nombre": "9ª gen", "desde": 2013, "hasta": 2017 },
+        { "nombre": "10ª gen", "desde": 2018, "hasta": 2022 },
+        { "nombre": "11ª gen", "desde": 2023, "hasta": 2025 }
+      ],
+      "CR-V": [
+        { "nombre": "1ª gen", "desde": 1995, "hasta": 2001 },
+        { "nombre": "2ª gen", "desde": 2002, "hasta": 2006 },
+        { "nombre": "3ª gen", "desde": 2007, "hasta": 2011 },
+        { "nombre": "4ª gen", "desde": 2012, "hasta": 2016 },
+        { "nombre": "5ª gen", "desde": 2017, "hasta": 2022 },
+        { "nombre": "6ª gen", "desde": 2023, "hasta": 2025 }
+      ],
+      "Fit": [
+        { "nombre": "1ª gen", "desde": 2001, "hasta": 2008 },
+        { "nombre": "2ª gen", "desde": 2009, "hasta": 2013 },
+        { "nombre": "3ª gen", "desde": 2014, "hasta": 2019 },
+        { "nombre": "4ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "City": [
+        { "nombre": "3ª gen", "desde": 1996, "hasta": 2002 },
+        { "nombre": "4ª gen", "desde": 2002, "hasta": 2008 },
+        { "nombre": "5ª gen", "desde": 2009, "hasta": 2013 },
+        { "nombre": "6ª gen", "desde": 2014, "hasta": 2019 },
+        { "nombre": "7ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "HR-V": [
+        { "nombre": "1ª gen", "desde": 1999, "hasta": 2006 },
+        { "nombre": "2ª gen", "desde": 2016, "hasta": 2021 },
+        { "nombre": "3ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "Pilot": [
+        { "nombre": "1ª gen", "desde": 2002, "hasta": 2008 },
+        { "nombre": "2ª gen", "desde": 2009, "hasta": 2015 },
+        { "nombre": "3ª gen", "desde": 2016, "hasta": 2022 },
+        { "nombre": "4ª gen", "desde": 2023, "hasta": 2025 }
+      ],
+      "Odyssey": [
+        { "nombre": "2ª gen", "desde": 1999, "hasta": 2004 },
+        { "nombre": "3ª gen", "desde": 2005, "hasta": 2010 },
+        { "nombre": "4ª gen", "desde": 2011, "hasta": 2017 },
+        { "nombre": "5ª gen", "desde": 2018, "hasta": 2025 }
+      ],
+      "Ridgeline": [
+        { "nombre": "1ª gen", "desde": 2006, "hasta": 2014 },
+        { "nombre": "2ª gen", "desde": 2017, "hasta": 2025 }
+      ]
+    }
+  }
+  

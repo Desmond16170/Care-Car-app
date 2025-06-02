@@ -1,0 +1,51 @@
+{
+    "logo": "logos/chevrolet.png",
+    "modelos": {
+      "Aveo": [
+        { "nombre": "1ª gen", "desde": 2002, "hasta": 2011 },
+        { "nombre": "2ª gen (Sonic)", "desde": 2011, "hasta": 2020 }
+      ],
+      "Sail": [
+        { "nombre": "1ª gen", "desde": 2000, "hasta": 2009 },
+        { "nombre": "2ª gen", "desde": 2010, "hasta": 2014 },
+        { "nombre": "3ª gen", "desde": 2015, "hasta": 2023 }
+      ],
+      "Spark": [
+        { "nombre": "1ª gen (Matiz)", "desde": 1998, "hasta": 2005 },
+        { "nombre": "2ª gen", "desde": 2005, "hasta": 2009 },
+        { "nombre": "3ª gen", "desde": 2010, "hasta": 2015 },
+        { "nombre": "4ª gen", "desde": 2015, "hasta": 2022 }
+      ],
+      "Onix": [
+        { "nombre": "1ª gen", "desde": 2012, "hasta": 2019 },
+        { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "Tracker": [
+        { "nombre": "1ª gen", "desde": 2001, "hasta": 2008 },
+        { "nombre": "2ª gen", "desde": 2013, "hasta": 2020 },
+        { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "Captiva": [
+        { "nombre": "1ª gen", "desde": 2006, "hasta": 2018 },
+        { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "Equinox": [
+        { "nombre": "2ª gen", "desde": 2010, "hasta": 2017 },
+        { "nombre": "3ª gen", "desde": 2018, "hasta": 2025 }
+      ],
+      "Colorado": [
+        { "nombre": "1ª gen", "desde": 2004, "hasta": 2012 },
+        { "nombre": "2ª gen", "desde": 2012, "hasta": 2023 },
+        { "nombre": "3ª gen", "desde": 2023, "hasta": 2025 }
+      ],
+      "D-Max": [
+        { "nombre": "1ª gen", "desde": 2002, "hasta": 2012 },
+        { "nombre": "2ª gen", "desde": 2012, "hasta": 2019 },
+        { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+      ],
+      "N400 max": [
+        { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+      ]
+    }
+  }
+  

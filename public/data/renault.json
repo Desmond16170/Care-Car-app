@@ -1,0 +1,40 @@
+{
+  "logo": "logos/renault.png",
+  "modelos": {
+    "Logan": [
+      { "nombre": "1ª gen", "desde": 2004, "hasta": 2012 },
+      { "nombre": "2ª gen", "desde": 2012, "hasta": 2020 },
+      { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "Sandero": [
+      { "nombre": "1ª gen", "desde": 2007, "hasta": 2014 },
+      { "nombre": "2ª gen", "desde": 2014, "hasta": 2020 },
+      { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "Duster": [
+      { "nombre": "1ª gen", "desde": 2010, "hasta": 2017 },
+      { "nombre": "2ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "Kwid": [
+      { "nombre": "1ª gen", "desde": 2015, "hasta": 2025 }
+    ],
+    "Koleos": [
+      { "nombre": "1ª gen", "desde": 2008, "hasta": 2015 },
+      { "nombre": "2ª gen", "desde": 2016, "hasta": 2025 }
+    ],
+    "Captur": [
+      { "nombre": "1ª gen", "desde": 2013, "hasta": 2019 },
+      { "nombre": "2ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "Twingo": [
+      { "nombre": "1ª gen", "desde": 1993, "hasta": 2007 },
+      { "nombre": "2ª gen", "desde": 2007, "hasta": 2014 },
+      { "nombre": "3ª gen", "desde": 2014, "hasta": 2024 }
+    ],
+    "Stepway": [
+      { "nombre": "Basado en Sandero 1ª gen", "desde": 2008, "hasta": 2014 },
+      { "nombre": "Basado en Sandero 2ª gen", "desde": 2014, "hasta": 2020 },
+      { "nombre": "Basado en Sandero 3ª gen", "desde": 2020, "hasta": 2025 }
+    ]
+  }
+}

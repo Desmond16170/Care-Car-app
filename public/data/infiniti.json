@@ -1,0 +1,21 @@
+{
+    "logo": "logos/infiniti.png",
+    "modelos": {
+      "Q50": [
+        { "nombre": "1ª gen", "desde": 2013, "hasta": 2025 }
+      ],
+      "QX50": [
+        { "nombre": "1ª gen", "desde": 2013, "hasta": 2017 },
+        { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "QX60": [
+        { "nombre": "1ª gen", "desde": 2013, "hasta": 2020 },
+        { "nombre": "2ª gen", "desde": 2021, "hasta": 2025 }
+      ],
+      "QX80": [
+        { "nombre": "1ª gen", "desde": 2010, "hasta": 2017 },
+        { "nombre": "2ª gen", "desde": 2018, "hasta": 2025 }
+      ]
+    }
+  }
+  

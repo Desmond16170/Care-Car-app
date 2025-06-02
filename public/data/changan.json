@@ -1,0 +1,31 @@
+{
+  "logo": "logos/changan.png",
+  "modelos": {
+    "CS15": [
+      { "nombre": "1ª gen", "desde": 2015, "hasta": 2020 },
+      { "nombre": "2ª gen (E-Pro)", "desde": 2020, "hasta": 2025 }
+    ],
+    "CS35 Plus": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "CS55 Plus": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "CS75 Plus": [
+      { "nombre": "1ª gen", "desde": 2019, "hasta": 2022 },
+      { "nombre": "2ª gen", "desde": 2022, "hasta": 2025 }
+    ],
+    "UNI-T": [
+      { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "UNI-K": [
+      { "nombre": "1ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "Alsvin": [
+      { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "E-Star": [
+      { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+    ]
+  }
+}

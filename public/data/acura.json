@@ -1,0 +1,60 @@
+{
+  "nombre": "Acura" ,
+  "logo": "/logos/acura.png",
+    "modelos": {
+      "Integra": [
+        { "nombre": "1ª gen", "desde": 1986, "hasta": 1989 },
+        { "nombre": "2ª gen", "desde": 1990, "hasta": 1993 },
+        { "nombre": "3ª gen", "desde": 1994, "hasta": 2001 },
+        { "nombre": "4ª gen", "desde": 2002, "hasta": 2006 },
+        { "nombre": "5ª gen", "desde": 2022, "hasta": 2025 }
+      ],
+      "RSX": [
+        { "nombre": "Única gen", "desde": 2002, "hasta": 2006 }
+      ],
+      "TL": [
+        { "nombre": "1ª gen", "desde": 1996, "hasta": 1998 },
+        { "nombre": "2ª gen", "desde": 1999, "hasta": 2003 },
+        { "nombre": "3ª gen", "desde": 2004, "hasta": 2008 },
+        { "nombre": "4ª gen", "desde": 2009, "hasta": 2014 }
+      ],
+      "TSX": [
+        { "nombre": "1ª gen", "desde": 2004, "hasta": 2008 },
+        { "nombre": "2ª gen", "desde": 2009, "hasta": 2014 }
+      ],
+      "ILX": [
+        { "nombre": "1ª gen", "desde": 2013, "hasta": 2022 }
+      ],
+      "RL": [
+        { "nombre": "1ª gen", "desde": 1996, "hasta": 2004 },
+        { "nombre": "2ª gen", "desde": 2005, "hasta": 2012 }
+      ],
+      "RLX": [
+        { "nombre": "Única gen", "desde": 2014, "hasta": 2020 }
+      ],
+      "TLX": [
+        { "nombre": "1ª gen", "desde": 2015, "hasta": 2020 },
+        { "nombre": "2ª gen", "desde": 2021, "hasta": 2025 }
+      ],
+      "MDX": [
+        { "nombre": "1ª gen", "desde": 2001, "hasta": 2006 },
+        { "nombre": "2ª gen", "desde": 2007, "hasta": 2013 },
+        { "nombre": "3ª gen", "desde": 2014, "hasta": 2020 },
+        { "nombre": "4ª gen", "desde": 2021, "hasta": 2025 }
+      ],
+      "RDX": [
+        { "nombre": "1ª gen", "desde": 2007, "hasta": 2012 },
+        { "nombre": "2ª gen", "desde": 2013, "hasta": 2018 },
+        { "nombre": "3ª gen", "desde": 2019, "hasta": 2025 }
+      ],
+      "ZDX": [
+        { "nombre": "1ª gen", "desde": 2010, "hasta": 2013 },
+        { "nombre": "2ª gen", "desde": 2024, "hasta": 2025 }
+      ],
+      "NSX": [
+        { "nombre": "1ª gen", "desde": 1991, "hasta": 2005 },
+        { "nombre": "2ª gen", "desde": 2016, "hasta": 2022 }
+      ]
+    }
+  }
+  

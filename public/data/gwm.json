@@ -1,0 +1,28 @@
+{
+  "logo": "logos/gwm.png",
+  "modelos": {
+    "Wingle 3": [
+      { "nombre": "1ª gen", "desde": 2006, "hasta": 2010 }
+    ],
+    "Wingle 5": [
+      { "nombre": "1ª gen", "desde": 2010, "hasta": 2020 }
+    ],
+    "Wingle 7": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "Poer": [
+      { "nombre": "1ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "Haval H2": [
+      { "nombre": "1ª gen", "desde": 2014, "hasta": 2020 }
+    ],
+    "Haval H6": [
+      { "nombre": "1ª gen", "desde": 2011, "hasta": 2017 },
+      { "nombre": "2ª gen", "desde": 2017, "hasta": 2020 },
+      { "nombre": "3ª gen", "desde": 2020, "hasta": 2025 }
+    ],
+    "Haval Jolion": [
+      { "nombre": "1ª gen", "desde": 2020, "hasta": 2025 }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "logo": "logos/peugeot.png",
+  "modelos": {
+    "206": [
+      { "nombre": "1ª gen", "desde": 1998, "hasta": 2012 }
+    ],
+    "207": [
+      { "nombre": "1ª gen", "desde": 2006, "hasta": 2014 }
+    ],
+    "208": [
+      { "nombre": "1ª gen", "desde": 2012, "hasta": 2019 },
+      { "nombre": "2ª gen", "desde": 2019, "hasta": 2025 }
+    ],
+    "301": [
+      { "nombre": "1ª gen", "desde": 2012, "hasta": 2025 }
+    ],
+    "308": [
+      { "nombre": "1ª gen", "desde": 2007, "hasta": 2013 },
+      { "nombre": "2ª gen", "desde": 2013, "hasta": 2021 },
+      { "nombre": "3ª gen", "desde": 2021, "hasta": 2025 }
+    ],
+    "3008": [
+      { "nombre": "1ª gen", "desde": 2009, "hasta": 2016 },
+      { "nombre": "2ª gen", "desde": 2016, "hasta": 2024 },
+      { "nombre": "3ª gen", "desde": 2024, "hasta": 2025 }
+    ],
+    "5008": [
+      { "nombre": "1ª gen", "desde": 2009, "hasta": 2017 },
+      { "nombre": "2ª gen", "desde": 2017, "hasta": 2025 }
+    ],
+    "Partner": [
+      { "nombre": "1ª gen", "desde": 1996, "hasta": 2008 },
+      { "nombre": "2ª gen", "desde": 2008, "hasta": 2018 },
+      { "nombre": "3ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "Rifter": [
+      { "nombre": "1ª gen", "desde": 2018, "hasta": 2025 }
+    ],
+    "Expert": [
+      { "nombre": "1ª gen", "desde": 1995, "hasta": 2006 },
+      { "nombre": "2ª gen", "desde": 2007, "hasta": 2016 },
+      { "nombre": "3ª gen", "desde": 2016, "hasta": 2025 }
+    ],
+    "Boxer": [
+      { "nombre": "1ª gen", "desde": 1994, "hasta": 2006 },
+      { "nombre": "2ª gen", "desde": 2006, "hasta": 2025 }
+    ]
+  }
+}

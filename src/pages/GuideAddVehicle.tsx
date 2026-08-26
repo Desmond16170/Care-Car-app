@@ -1,19 +1,12 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ThemedButton from '../components/ThemedButton';
+import { createVehicle, normalizePlate } from '../services/carCareData';
 
-interface Marca {
-  nombre: string;
-}
-
+interface Marca { nombre: string; }
 interface Modelo {
   nombre: string;
-  generaciones: {
-    nombre: string;
-    desde: number;
-    hasta: number;
-  }[];
+  generaciones: { nombre: string; desde: number; hasta: number }[];
 }
 
 const GuidedAddVehicle = () => {
@@ -25,222 +18,201 @@ const GuidedAddVehicle = () => {
   const [selectedGeneracion, setSelectedGeneracion] = useState<string | null>(null);
   const [kilometraje, setKilometraje] = useState('');
   const [placa, setPlaca] = useState('');
+  const [brandSearch, setBrandSearch] = useState('');
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const allMarcas: Marca[] = [
-      { nombre: 'Acura' }, { nombre: 'Audi' }, { nombre: 'BAIC' }, { nombre: 'BMW' },
-      { nombre: 'BYD' }, { nombre: 'Changan' }, { nombre: 'Chery' }, { nombre: 'Chevrolet' },
-      { nombre: 'Chrysler' }, { nombre: 'DFSK' }, { nombre: 'Dodge' }, { nombre: 'Dongfeng' },
-      { nombre: 'Faw' }, { nombre: 'Fiat' }, { nombre: 'Ford' }, { nombre: 'Foton' },
-      { nombre: 'GAC' }, { nombre: 'Geely' }, { nombre: 'GWM' }, { nombre: 'Genesis' },
-      { nombre: 'Haval' }, { nombre: 'Honda' }, { nombre: 'Hyundai' }, { nombre: 'Infiniti' },
-      { nombre: 'Isuzu' }, { nombre: 'JAC' }, { nombre: 'Jeep' }, { nombre: 'Kia' },
-      { nombre: 'Lada' }, { nombre: 'Land Rover' }, { nombre: 'Lexus' }, { nombre: 'Lincoln' },
-      { nombre: 'Mazda' }, { nombre: 'Mercedes-Benz' }, { nombre: 'MG' }, { nombre: 'Mini' },
-      { nombre: 'Mitsubishi' }, { nombre: 'Nissan' }, { nombre: 'Opel' }, { nombre: 'Peugeot' },
-      { nombre: 'Porsche' }, { nombre: 'Renault' }, { nombre: 'Seat' }, { nombre: 'Skoda' },
-      { nombre: 'Subaru' }, { nombre: 'Suzuki' }, { nombre: 'Tesla' }, { nombre: 'Toyota' },
-      { nombre: 'Volkswagen' }, { nombre: 'Volvo' }
-    ];
-    setMarcas(allMarcas);
+    setMarcas([
+      'Acura','Audi','BAIC','BMW','BYD','Changan','Chery','Chevrolet','Chrysler','DFSK','Dodge','Dongfeng',
+      'Faw','Fiat','Ford','Foton','GAC','Geely','GWM','Genesis','Haval','Honda','Hyundai','Infiniti','Isuzu',
+      'JAC','Jeep','Kia','Lada','Land Rover','Lexus','Lincoln','Mazda','Mercedes-Benz','MG','Mini','Mitsubishi',
+      'Nissan','Opel','Peugeot','Porsche','Renault','Seat','Skoda','Subaru','Suzuki','Tesla','Toyota','Volkswagen','Volvo'
+    ].map(nombre => ({ nombre })));
   }, []);
+
+  const visibleBrands = useMemo(() => {
+    const query = brandSearch.trim().toLowerCase();
+    return query ? marcas.filter(m => m.nombre.toLowerCase().includes(query)) : marcas;
+  }, [brandSearch, marcas]);
+
+  const step = !selectedMarca ? 1 : !selectedModelo ? 2 : 3;
 
   const handleSelectMarca = (marca: string) => {
     setSelectedMarca(marca);
     setSelectedModelo(null);
     setSelectedGeneracion(null);
+    setMessage('');
     fetch(`./data/${marca.toLowerCase().replace(/ /g, '-')}.json`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('No disponible');
+        return res.json();
+      })
       .then(data => {
-        const modelosTransformados: Modelo[] = Object.entries(data.modelos).map(
-          ([nombre, generaciones]: [string, any]) => ({
-            nombre,
-            generaciones
-          })
+        const rows: Modelo[] = Object.entries(data.modelos || {}).map(
+          ([nombre, generaciones]: [string, any]) => ({ nombre, generaciones })
         );
-        setModelos(modelosTransformados);
+        setModelos(rows);
       })
       .catch(() => setModelos([]));
   };
 
   const handleSelectModelo = (modelo: string) => {
     setSelectedModelo(modelo);
-    const modeloInfo = modelos.find(m => m.nombre === modelo);
-    if (modeloInfo) {
-      const gens = modeloInfo.generaciones.map(gen => `${gen.nombre} (${gen.desde}-${gen.hasta})`);
-      setGeneraciones(gens);
-    } else {
+    setSelectedGeneracion(null);
+    const info = modelos.find(m => m.nombre === modelo);
+    setGeneraciones(info ? info.generaciones.map(gen => `${gen.nombre} (${gen.desde}-${gen.hasta})`) : []);
+  };
+
+  const handleBack = () => {
+    setMessage('');
+    if (selectedModelo) {
+      setSelectedModelo(null);
+      setSelectedGeneracion(null);
       setGeneraciones([]);
+    } else if (selectedMarca) {
+      setSelectedMarca(null);
+      setModelos([]);
+    } else {
+      navigate('/search');
     }
   };
 
-  const handleSaveVehicle = () => {
-    const activeUser = JSON.parse(localStorage.getItem('car-care-active-user') || 'null');
-    if (!activeUser || !selectedMarca || !selectedModelo || !selectedGeneracion || !placa) {
-      setMessage('Por favor completa todos los campos.');
+  const handleSaveVehicle = async () => {
+    if (!selectedMarca || !selectedModelo || !selectedGeneracion || !normalizePlate(placa)) {
+      setMessage('Completa generación y placa antes de guardar.');
       return;
     }
 
-    const vehicle = {
-      make: selectedMarca,
-      model: selectedModelo,
-      year: selectedGeneracion,
-      mileage: kilometraje,
-      plate: placa,
-      registeredBy: activeUser.name,
-    };
-
-    const allVehicles = JSON.parse(localStorage.getItem('car-care-vehicles') || '{}');
-    const userVehicles = allVehicles[activeUser.name] || [];
-
-    if (userVehicles.some((v: any) => v.plate === placa)) {
-      setMessage('Ya existe un vehículo con esa placa.');
+    const mileage = Number(kilometraje || 0);
+    if (!Number.isFinite(mileage) || mileage < 0) {
+      setMessage('Ingresa un kilometraje válido.');
       return;
     }
 
-    userVehicles.push(vehicle);
-    allVehicles[activeUser.name] = userVehicles;
-    localStorage.setItem('car-care-vehicles', JSON.stringify(allVehicles));
-    navigate(`/vehicle/${placa}`);
+    setSaving(true);
+    setMessage('');
+    try {
+      const vehicle = await createVehicle({
+        make: selectedMarca,
+        model: selectedModelo,
+        generation: selectedGeneracion,
+        currentMileage: mileage,
+        plate: placa,
+      });
+      navigate(`/vehicle/${encodeURIComponent(vehicle.plate || normalizePlate(placa))}`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'No se pudo guardar el vehículo.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h2>Modo Guiado: Agregar Vehículo</h2>
+    <section className="cc-page cc-form-page">
+      <div className="cc-page-header">
+        <div>
+          <div className="cc-hero-kicker">Registro rápido</div>
+          <h1 className="cc-page-title">Nuevo vehículo</h1>
+          <p className="cc-page-subtitle">Tres pasos cortos para registrar sin detener el trabajo.</p>
+        </div>
+        <ThemedButton onClick={() => navigate('/add-vehicle')} style={{ width: 'auto', backgroundColor: '#fff', color: '#4f5a65', border: '1px solid #dfe4e8' }}>
+          Registro manual
+        </ThemedButton>
+      </div>
 
-      {!selectedMarca && (
-        <>
-          <p>Selecciona una marca:</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
-            {marcas.map(marca => (
-              <button key={marca.nombre} onClick={() => handleSelectMarca(marca.nombre)} style={{
-                border: '1px solid #ccc',
-                borderRadius: '8px',
-                padding: '10px',
-                width: '100px',
-                height: '100px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <img
-                  src={`./logos/${marca.nombre.toLowerCase().replace(/ /g, '_')}.png`}
-                  alt={marca.nombre}
-                  style={{ width: '50px', height: '40px' }}
-                />
-                <span style={{ fontSize: '12px' }}>{marca.nombre}</span>
-              </button>
-            ))}
-          </div>
-          <ThemedButton
-  onClick={() => navigate('/add-vehicle')}
-  style={{
-    border: '2px dashed gray',
-    borderRadius: '8px',
-    padding: '10px',
-    width: '100px',
-    height: '100px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f9f9f9',
-    color: '#555',
-    fontSize: '12px',
-  }}
->
-  <span style={{ fontSize: '24px', marginBottom: '5px' }}>＋</span>
-  otro
-</ThemedButton>
+      <div className="cc-stepper" aria-label="Progreso de registro">
+        {['Marca', 'Modelo', 'Datos'].map((label, index) => {
+          const number = index + 1;
+          return (
+            <div key={label} className={`cc-step${number === step ? ' current' : number < step ? ' done' : ''}`}>
+              <span>{number}</span><strong>{label}</strong>
+            </div>
+          );
+        })}
+      </div>
 
-        </>
-      )}
+      <div className="cc-card cc-form-shell">
+        {step === 1 && (
+          <>
+            <div className="cc-panel-head">
+              <div><h2>Selecciona la marca</h2><p>Puedes escribir para encontrarla más rápido.</p></div>
+            </div>
+            <input className="cc-input" type="search" placeholder="Buscar marca..." value={brandSearch} onChange={e => setBrandSearch(e.target.value)} />
+            <div className="cc-brand-grid">
+              {visibleBrands.map(marca => (
+                <button key={marca.nombre} className="cc-brand-card" onClick={() => handleSelectMarca(marca.nombre)}>
+                  <div className="cc-brand-logo-wrap">
+                    <img src={`./logos/${marca.nombre.toLowerCase().replace(/ /g, '_')}.png`} alt="" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                  </div>
+                  <strong>{marca.nombre}</strong>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
-      {selectedMarca && !selectedModelo && (
-        <>
-          <p>Selecciona un modelo:</p>
-          {modelos.length === 0 && <p>No hay modelos disponibles.</p>}
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
-            {modelos.map(modelo => (
-              <ThemedButton
-  key={modelo.nombre}
-  onClick={() => handleSelectModelo(modelo.nombre)}
-  style={{
-    maxWidth: '300px',  // límite de ancho
-    width: '90%',        // ancho relativo adaptable
-    margin: '0 auto'     // centrar horizontalmente
-  }}
->
-  {modelo.nombre}
-</ThemedButton>
-            ))}
-          </div>
-        </>
-      )}
+        {step === 2 && (
+          <>
+            <div className="cc-selection-summary"><span>Marca</span><strong>{selectedMarca}</strong></div>
+            <div className="cc-panel-head">
+              <div><h2>Selecciona el modelo</h2><p>Escoge el modelo que corresponde al vehículo.</p></div>
+            </div>
+            {modelos.length === 0 ? (
+              <div className="cc-empty-inline">No encontramos modelos para esta marca. Usa el registro manual si lo necesitas.</div>
+            ) : (
+              <div className="cc-option-grid">
+                {modelos.map(modelo => (
+                  <button key={modelo.nombre} className="cc-option-card" onClick={() => handleSelectModelo(modelo.nombre)}>{modelo.nombre}</button>
+                ))}
+              </div>
+            )}
+          </>
+        )}
 
-      {selectedModelo && (
-        <>
-          <p>Selecciona una generación:</p>
-          <select onChange={e => setSelectedGeneracion(e.target.value)} value={selectedGeneracion || ''} style={{ padding: '10px', marginBottom: '10px' }}>
-            <option value="">Selecciona generación</option>
-            {generaciones.map((gen, idx) => (
-              <option key={idx} value={gen}>{gen}</option>
-            ))}
-          </select>
-          <input
-  type="text"
-  placeholder="Placa"
-  value={placa}
-  onChange={(e) => setPlaca(e.target.value)}
-  style={{
-    padding: '10px',
-    width: '90%',
-    maxWidth: '300px',
-    display: 'block',
-    margin: '10px auto',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
-    fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
-  }}
-/>
+        {step === 3 && (
+          <>
+            <div className="cc-selection-summary">
+              <span>Vehículo</span><strong>{selectedMarca} {selectedModelo}</strong>
+            </div>
+            <div className="cc-panel-head">
+              <div><h2>Completa los datos</h2><p>Solo lo necesario para poder empezar a trabajar con el vehículo.</p></div>
+            </div>
+            <div className="cc-field-grid">
+              <label className="cc-field cc-field-full">
+                <span>Generación</span>
+                <select className="cc-input" value={selectedGeneracion || ''} onChange={e => setSelectedGeneracion(e.target.value)}>
+                  <option value="">Selecciona una generación</option>
+                  {generaciones.map(gen => <option key={gen} value={gen}>{gen}</option>)}
+                </select>
+              </label>
+              <label className="cc-field">
+                <span>Placa</span>
+                <input className="cc-input cc-plate-input" value={placa} onChange={e => setPlaca(e.target.value.toUpperCase())} placeholder="ABC123" autoCapitalize="characters" />
+              </label>
+              <label className="cc-field">
+                <span>Kilometraje actual</span>
+                <input className="cc-input" type="number" min="0" value={kilometraje} onChange={e => setKilometraje(e.target.value)} placeholder="0" />
+              </label>
+            </div>
+          </>
+        )}
 
-<input
-  type="number"
-  placeholder="Kilometraje"
-  value={kilometraje}
-  onChange={(e) => setKilometraje(e.target.value)}
-  style={{
-    padding: '10px',
-    width: '90%',
-    maxWidth: '300px',
-    display: 'block',
-    margin: '10px auto',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
-    fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
-  }}
-/>
+        {message && <div className="cc-alert cc-alert-danger" style={{ marginTop: '16px' }}>{message}</div>}
 
-<ThemedButton
-  onClick={handleSaveVehicle}
-  style={{
-    maxWidth: '300px',
-    width: '90%',
-    margin: '1rem auto 0 auto',
-    display: 'block'
-  }}
->
-  Guardar Vehículo
-</ThemedButton>
-          {message && <p style={{ color: 'red', marginTop: '10px' }}>{message}</p>}
-        </>
-      )}
-    </div>
+        <div className="cc-form-actions">
+          <ThemedButton onClick={handleBack} style={{ width: 'auto', backgroundColor: '#fff', color: '#4f5a65', border: '1px solid #dfe4e8' }}>
+            Atrás
+          </ThemedButton>
+          {step === 3 && (
+            <ThemedButton onClick={handleSaveVehicle} disabled={saving} style={{ width: 'auto', minWidth: '170px' }}>
+              {saving ? 'Guardando...' : 'Guardar vehículo'}
+            </ThemedButton>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };
 

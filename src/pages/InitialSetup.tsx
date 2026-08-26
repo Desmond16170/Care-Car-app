@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { flushCloudState } from '../services/cloudSync';
 
 const InitialSetup = () => {
   const [tallerName, setTallerName] = useState('');
@@ -33,8 +32,7 @@ const InitialSetup = () => {
       localStorage.setItem('car-care-body-text-color', '#111827');
       localStorage.setItem('car-care-font-family', 'Arial');
       localStorage.setItem('car-care-configured', 'true');
-      await flushCloudState();
-      navigate('/home', { replace: true });
+      navigate('/1', { replace: true });
     } catch {
       setError('No se pudo guardar la configuración. Inténtalo nuevamente.');
     } finally {

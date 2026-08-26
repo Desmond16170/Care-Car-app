@@ -3,8 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const isWeb = process.env.BUILD_TARGET === 'web';
-
 module.exports = {
   entry: './src/index.tsx',
   devtool: 'source-map',
@@ -22,7 +20,7 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'], // Tailwind
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
@@ -33,9 +31,10 @@ module.exports = {
     },
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'assets/[name].[contenthash:8].js',
     path: path.resolve(__dirname, 'dist'),
-    clean: true, // limpia el directorio de salida
+    publicPath: 'auto',
+    clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -44,18 +43,22 @@ module.exports = {
     new webpack.ProvidePlugin({
       global: require.resolve('global'),
     }),
+    new webpack.DefinePlugin({
+      __SUPABASE_URL__: JSON.stringify(process.env.CAR_CARE_SUPABASE_URL || ''),
+      __SUPABASE_PUBLISHABLE_KEY__: JSON.stringify(process.env.CAR_CARE_SUPABASE_PUBLISHABLE_KEY || ''),
+    }),
     new CopyPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, 'public'),
           to: path.resolve(__dirname, 'dist'),
           globOptions: {
-            ignore: ['**/index.html'], // ⚠️ evita conflicto con HtmlWebpackPlugin
+            ignore: ['**/index.html'],
           },
         },
       ],
     }),
   ],
-  mode: 'development',
-  target: isWeb ? 'web' : 'electron-renderer',
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  target: 'web',
 };

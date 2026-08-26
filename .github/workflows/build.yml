@@ -1,0 +1,69 @@
+name: Build web and Windows
+
+on:
+  push:
+    branches:
+      - main
+      - care-car-2-supabase-netlify
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      build_windows:
+        description: Build and publish the Windows installer
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Web / PWA
+    runs-on: ubuntu-latest
+    env:
+      CAR_CARE_SUPABASE_URL: ${{ secrets.CAR_CARE_SUPABASE_URL }}
+      CAR_CARE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.CAR_CARE_SUPABASE_PUBLISHABLE_KEY }}
+      ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run ci:web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: care-car-pwa
+          path: dist
+          if-no-files-found: error
+
+  windows:
+    name: Windows installer
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.build_windows)
+    runs-on: windows-latest
+    env:
+      CAR_CARE_SUPABASE_URL: ${{ secrets.CAR_CARE_SUPABASE_URL || 'https://raufjvpmtdputixikcml.supabase.co' }}
+      CAR_CARE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.CAR_CARE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_kDB9iGLt-BU9zFRqIFDikA_k-umFmqO' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Validate desktop configuration
+        shell: pwsh
+        run: |
+          if (-not $env:CAR_CARE_SUPABASE_URL -or -not $env:CAR_CARE_SUPABASE_PUBLISHABLE_KEY) {
+            throw "Configure CAR_CARE_SUPABASE_URL and CAR_CARE_SUPABASE_PUBLISHABLE_KEY as GitHub Actions secrets before building Windows."
+          }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run dist:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: care-car-windows-installer
+          path: release/*.exe
+          if-no-files-found: error

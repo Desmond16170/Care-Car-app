@@ -37,7 +37,13 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   };
 
   return (
-    <button type={type} onClick={onClick} className={className} style={combinedStyle} disabled={disabled}>
+    <button
+      type={type}
+      onClick={onClick}
+      className={className}
+      style={combinedStyle}
+      disabled={disabled}
+    >
       {children}
     </button>
   );

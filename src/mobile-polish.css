@@ -1,0 +1,369 @@
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cc-main {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+}
+
+.cc-bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.cc-topbar {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.cc-input,
+.cc-textarea,
+.cc-file-input,
+.cc-color-input {
+  font-size: 16px;
+}
+
+.cc-form-actions button,
+.cc-detail-actions button,
+.cc-action-card,
+.cc-list-row,
+.cc-check-card,
+.cc-damage-grid button,
+.cc-car-visual button,
+.cc-bottom-link {
+  touch-action: manipulation;
+}
+
+.cc-signature-canvas {
+  touch-action: none;
+}
+
+@media (min-width: 681px) and (max-width: 1100px) {
+  .cc-main {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .cc-page-header {
+    align-items: flex-start;
+  }
+
+  .cc-dashboard-grid,
+  .cc-work-grid,
+  .cc-history-grid,
+  .cc-tramado-columns,
+  .cc-customer-layout,
+  .cc-receptions-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cc-brand-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .cc-check-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .cc-bottom-nav {
+    display: none;
+  }
+
+  .cc-main {
+    padding-bottom: 32px;
+  }
+}
+
+@media (max-width: 680px) {
+  .cc-main {
+    width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .cc-page {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cc-page-header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .cc-page-header > button,
+  .cc-page-header > a,
+  .cc-page-header > div + button {
+    width: 100% !important;
+  }
+
+  .cc-page-title {
+    font-size: clamp(1.55rem, 7.5vw, 2rem);
+    line-height: 1.08;
+  }
+
+  .cc-page-subtitle,
+  .cc-hero-copy {
+    font-size: .9rem;
+    line-height: 1.45;
+  }
+
+  .cc-card,
+  .cc-panel,
+  .cc-form-shell {
+    border-radius: 14px;
+  }
+
+  .cc-form-shell,
+  .cc-panel {
+    padding: 14px;
+  }
+
+  .cc-hero {
+    padding: 18px;
+  }
+
+  .cc-user-chip {
+    justify-self: start;
+    max-width: 100%;
+  }
+
+  .cc-field-grid,
+  .cc-detail-meta-grid,
+  .cc-settings-inline-form,
+  .cc-settings-inline-form-3,
+  .cc-tramado-columns,
+  .cc-work-grid,
+  .cc-history-grid,
+  .cc-dashboard-grid,
+  .cc-customer-layout,
+  .cc-receptions-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cc-field-full {
+    grid-column: auto;
+  }
+
+  .cc-input,
+  .cc-textarea,
+  select.cc-input {
+    min-height: 46px;
+  }
+
+  textarea.cc-input,
+  .cc-textarea {
+    min-height: 104px;
+  }
+
+  .cc-form-actions {
+    position: sticky;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+    z-index: 30;
+    margin: 18px -8px -8px;
+    padding: 10px 8px;
+    border-top: 1px solid rgba(213,219,224,.9);
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .cc-form-actions button {
+    min-height: 46px;
+  }
+
+  .cc-bottom-nav {
+    min-height: 62px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .cc-bottom-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cc-bottom-link {
+    min-width: 64px;
+    min-height: 58px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    line-height: 1.1;
+  }
+
+  .cc-topbar-inner {
+    min-height: 58px;
+  }
+
+  .cc-brand-subtitle {
+    display: none;
+  }
+
+  .cc-brand-title {
+    max-width: 46vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cc-mobile-settings-link {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .cc-list-row {
+    min-height: 58px;
+    gap: 8px;
+  }
+
+  .cc-list-row-end {
+    max-width: 42%;
+  }
+
+  .cc-list-row strong,
+  .cc-list-row span {
+    overflow-wrap: anywhere;
+  }
+
+  .cc-stepper-four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .cc-stepper-four .cc-step {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .cc-stepper-four .cc-step strong {
+    display: none;
+  }
+
+  .cc-check-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cc-photo-preview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cc-car-visual {
+    min-height: 300px;
+    padding: 12px;
+  }
+
+  .cc-car-visual button {
+    min-height: 48px;
+    font-size: .7rem;
+  }
+
+  .cc-signature-pad {
+    min-height: 210px;
+  }
+
+  .cc-signature-canvas {
+    min-height: 170px;
+  }
+
+  .cc-settings-layout {
+    display: block;
+  }
+
+  .cc-settings-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 6px;
+    margin-bottom: 12px;
+    padding: 6px;
+    scrollbar-width: none;
+  }
+
+  .cc-settings-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cc-settings-tabs button {
+    flex: 0 0 auto;
+    min-width: 92px;
+  }
+
+  .cc-pwa-install {
+    left: 12px;
+    right: 12px;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .cc-main {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .cc-card,
+  .cc-panel,
+  .cc-form-shell {
+    border-radius: 12px;
+  }
+
+  .cc-photo-preview-grid,
+  .cc-check-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cc-metric-card {
+    padding: 14px;
+  }
+
+  .cc-metric-value {
+    font-size: 1.7rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 560px) and (pointer: coarse) {
+  .cc-topbar {
+    position: relative;
+  }
+
+  .cc-main {
+    padding-top: 8px;
+  }
+
+  .cc-bottom-nav {
+    min-height: 52px;
+  }
+
+  .cc-bottom-link {
+    min-height: 50px;
+  }
+
+  .cc-form-actions {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cc-signature-pad {
+    min-height: 170px;
+  }
+}

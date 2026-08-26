@@ -1,25 +1,31 @@
 import React, { useState } from 'react';
-import { authRedirectUrl } from '../auth/redirects';
-import { supabase } from '../services/supabaseClient';
+import { useNavigate } from 'react-router-dom';
+import ThemedButton from '../components/ThemedButton';
+import TextButton from '../components/TextButton';
+import { isSupabaseConfigured, supabase } from '../lib/supabase';
 
-const Register = ({ onBack }: { onBack?: () => void }) => {
-  const isElectron = typeof window !== 'undefined' && typeof (window as any).require === 'function';
-  const [identification, setIdentification] = useState('');
+type RegisterProps = {
+  onBackToLogin?: () => void;
+};
+
+const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
   const [name, setName] = useState('');
+  const [identification, setIdentification] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmation, setConfirmation] = useState('');
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setMessage('');
     setIsError(false);
-    if (password !== confirmation) {
-      setMessage('Las contraseñas no coinciden.');
+
+    if (!supabase) {
       setIsError(true);
+      setMessage('Supabase todavía no está configurado en esta instalación.');
       return;
     }
 
@@ -28,61 +34,84 @@ const Register = ({ onBack }: { onBack?: () => void }) => {
       email: email.trim(),
       password,
       options: {
-        emailRedirectTo: authRedirectUrl('login'),
-        data: { full_name: name.trim(), identification: identification.trim() },
+        data: {
+          full_name: name.trim(),
+          identification: identification.trim() || null,
+        },
       },
     });
+    setLoading(false);
 
     if (error) {
-      setMessage(error.message.toLowerCase().includes('already')
-        ? 'Este correo ya está registrado.'
-        : 'No pudimos crear la cuenta. Revisa los datos e intenta nuevamente.');
       setIsError(true);
-    } else {
-      setMessage(data.session
-        ? 'Cuenta creada correctamente. Ya puedes continuar.'
-        : 'Cuenta creada. Revisa tu correo y confirma el enlace antes de ingresar.');
+      setMessage(error.message);
+      return;
     }
-    setLoading(false);
+
+    if (data.session) {
+      navigate('/1', { replace: true });
+      return;
+    }
+
+    setMessage('Cuenta creada. Revisa tu correo para confirmar el registro y luego inicia sesión.');
+    setName('');
+    setIdentification('');
+    setEmail('');
+    setPassword('');
   };
 
-  if (!isElectron) {
-    return (
-      <main className="auth-page auth-page--compact"><section className="auth-panel"><div className="auth-card">
-        <p className="eyebrow">REGISTRO PROTEGIDO</p><h2>Registra tu empresa en Windows</h2>
-        <p>La cuenta inicial debe crearse desde una instalación autorizada de Car Care.</p>
-        <button className="primary-action" onClick={onBack || (() => history.back())}>Volver</button>
-      </div></section></main>
-    );
-  }
-
   return (
-    <main className="auth-page auth-page--compact"><section className="auth-panel">
-      <div className="auth-card auth-card--wide">
-        <button className="back-action" type="button" onClick={onBack || (() => history.back())}>← Volver</button>
-        <div className="auth-card__heading"><p className="eyebrow">NUEVA EMPRESA</p><h2>Crea la cuenta principal</h2>
-          <p>Esta cuenta administrará la información sincronizada del taller.</p></div>
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="auth-form__grid">
-            <div className="field-group"><label htmlFor="register-name">Nombre del responsable</label>
-              <input id="register-name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required /></div>
-            <div className="field-group"><label htmlFor="register-id">Identificación</label>
-              <input id="register-id" value={identification} onChange={(e) => setIdentification(e.target.value)} required /></div>
+    <section className="cc-auth-page">
+      <div className="cc-auth-card cc-auth-card-wide">
+        <div className="cc-auth-brand">
+          <div className="cc-auth-logo"><span>CC</span></div>
+          <div>
+            <div className="cc-hero-kicker">Nueva cuenta</div>
+            <h1>Crear cuenta</h1>
+            <p>Una sola cuenta para Windows, celular, tablet y navegador.</p>
           </div>
-          <div className="field-group"><label htmlFor="register-email">Correo electrónico</label>
-            <input id="register-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
-          <div className="auth-form__grid">
-            <div className="field-group"><label htmlFor="register-password">Contraseña</label>
-              <input id="register-password" type="password" autoComplete="new-password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} required />
-              <small>Mínimo 8 caracteres.</small></div>
-            <div className="field-group"><label htmlFor="register-confirmation">Confirmar contraseña</label>
-              <input id="register-confirmation" type="password" autoComplete="new-password" minLength={8} value={confirmation} onChange={(e) => setConfirmation(e.target.value)} required /></div>
+        </div>
+
+        {!isSupabaseConfigured && (
+          <div className="cc-alert cc-alert-info">Modo de prueba: falta configurar la conexión con Supabase.</div>
+        )}
+
+        <form onSubmit={handleSubmit} className="cc-auth-form">
+          <div className="cc-field-grid">
+            <label className="cc-field cc-field-full">
+              <span>Nombre completo</span>
+              <input className="cc-input" type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nombre de la persona" required />
+            </label>
+            <label className="cc-field">
+              <span>Identificación</span>
+              <input className="cc-input" type="text" value={identification} onChange={e => setIdentification(e.target.value)} placeholder="Opcional" />
+            </label>
+            <label className="cc-field">
+              <span>Correo electrónico</span>
+              <input className="cc-input" type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" placeholder="nombre@correo.com" required />
+            </label>
+            <label className="cc-field cc-field-full">
+              <span>Contraseña</span>
+              <input className="cc-input" type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" minLength={8} placeholder="Mínimo 8 caracteres" required />
+              <small className="cc-field-help">Usa una contraseña que no compartas con otras cuentas.</small>
+            </label>
           </div>
-          {message && <div className={isError ? 'form-error' : 'form-success'} role="status">{message}</div>}
-          <button className="primary-action" type="submit" disabled={loading}>{loading ? 'Creando cuenta…' : 'Crear cuenta de empresa'}</button>
+
+          {message && (
+            <div className={isError ? 'cc-alert cc-alert-danger' : 'cc-alert cc-alert-info'}>{message}</div>
+          )}
+
+          <ThemedButton type="submit" disabled={loading}>
+            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+          </ThemedButton>
         </form>
+
+        <div className="cc-auth-secondary">
+          <span>¿Ya tienes una cuenta?</span>
+          <TextButton onClick={() => (onBackToLogin ? onBackToLogin() : navigate('/login'))}>Volver a iniciar sesión</TextButton>
+        </div>
       </div>
-    </section></main>
+    </section>
   );
 };
 

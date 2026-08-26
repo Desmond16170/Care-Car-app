@@ -5,7 +5,15 @@ import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
-import { startCloudSync } from './services/cloudSync';
+import './modern-ui.css';
+import './vehicle-details.css';
+import './auth-settings.css';
+import './tramado.css';
+import './recepciones.css';
+import './customers-modules.css';
+import './pwa-mobile.css';
+import './mobile-polish.css';
+import './modern-ui-overrides.css';
 
 const bg = localStorage.getItem('car-care-background-color');
 const txt = localStorage.getItem('car-care-body-text-color');
@@ -30,23 +38,17 @@ window.onafterprint = () => {
   if (printArea) printArea.style.display = 'none';
 };
 
-async function bootstrap() {
-  await startCloudSync();
-
-  const root = ReactDOM.createRoot(document.getElementById('root')!);
-  root.render(
-    <HashRouter>
-      <App />
-    </HashRouter>
-  );
+if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(error => {
+      console.warn('No se pudo registrar el service worker de Care Car.', error);
+    });
+  });
 }
 
-bootstrap().catch((error) => {
-  console.error('Error al iniciar Car Care:', error);
-  const root = ReactDOM.createRoot(document.getElementById('root')!);
-  root.render(
-    <HashRouter>
-      <App />
-    </HashRouter>
-  );
-});
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+root.render(
+  <HashRouter>
+    <App />
+  </HashRouter>
+);

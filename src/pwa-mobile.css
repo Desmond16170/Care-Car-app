@@ -1,0 +1,284 @@
+html {
+  min-height: 100%;
+  background: #f5f7f8;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+.cc-vehicle-diagram-wrap {
+  border: 1px solid var(--cc-border);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fbfcfd, #f3f5f6);
+  padding: 12px;
+}
+
+.cc-vehicle-diagram-svg {
+  width: 100%;
+  height: auto;
+  max-height: 440px;
+  display: block;
+}
+
+.cc-car-body {
+  fill: #e6eaed;
+  stroke: #9ba6ae;
+  stroke-width: 3;
+}
+
+.cc-car-cabin {
+  fill: #f7f9fa;
+  stroke: #b8c1c7;
+  stroke-width: 2;
+}
+
+.cc-car-glass {
+  fill: #dce9f0;
+  stroke: #aebcc5;
+  stroke-width: 2;
+}
+
+.cc-diagram-zone {
+  cursor: pointer;
+  outline: none;
+}
+
+.cc-diagram-zone rect {
+  fill: rgba(255,255,255,.72);
+  stroke: rgba(118,132,143,.52);
+  stroke-width: 1.5;
+  transition: fill 140ms ease, stroke 140ms ease;
+}
+
+.cc-diagram-zone text {
+  fill: #596570;
+  font-size: 12px;
+  font-weight: 750;
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cc-diagram-zone:hover rect,
+.cc-diagram-zone.selected rect {
+  fill: #fff0e1;
+  stroke: #e08b37;
+  stroke-width: 2.5;
+}
+
+.cc-diagram-zone.selected text {
+  fill: #8b4c12;
+}
+
+.cc-wheel-zone rect {
+  fill: #606a72;
+  stroke: #394249;
+}
+
+.cc-wheel-zone.selected rect {
+  fill: #f28c28;
+  stroke: #a6530a;
+}
+
+.cc-wheel-zone text {
+  fill: #606a72;
+}
+
+.cc-interior-zone rect {
+  fill: rgba(242,140,40,.04);
+}
+
+.cc-diagram-help {
+  margin-top: 6px;
+  text-align: center;
+  color: var(--cc-muted);
+  font-size: .76rem;
+}
+
+.cc-damage-note-card {
+  padding: 12px;
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.cc-text-danger {
+  width: max-content;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--cc-danger);
+  font-size: .74rem;
+  font-weight: 700;
+}
+
+.cc-camera-upload {
+  margin-top: 16px;
+}
+
+.cc-photo-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.cc-photo-preview-card {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.cc-photo-preview-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: #eef1f3;
+}
+
+.cc-photo-preview-card figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 7px 8px;
+}
+
+.cc-photo-preview-card figcaption span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #5b6670;
+  font-size: .7rem;
+}
+
+.cc-photo-preview-card figcaption button {
+  border: 0;
+  background: transparent;
+  color: var(--cc-danger);
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+.cc-pwa-install-card {
+  position: fixed;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 1200;
+  width: min(520px, calc(100vw - 24px));
+  transform: translateX(-50%);
+  padding: 12px;
+  border: 1px solid #dfE4e8;
+  border-radius: 16px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 14px 44px rgba(28,38,47,.18);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cc-pwa-install-card > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.cc-pwa-install-card strong {
+  font-size: .88rem;
+}
+
+.cc-pwa-install-card span {
+  color: var(--cc-muted);
+  font-size: .76rem;
+  line-height: 1.35;
+}
+
+.cc-pwa-install-actions {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.cc-pwa-install-actions button {
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--cc-primary);
+  color: #fff;
+  font-weight: 800;
+  font-size: .75rem;
+}
+
+.cc-pwa-install-actions button.secondary {
+  background: #eef1f3;
+  color: #56616b;
+}
+
+@media (display-mode: standalone) {
+  .cc-topbar {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .cc-main {
+    min-height: calc(100dvh - 70px);
+  }
+}
+
+@media (max-width: 760px) {
+  .cc-main {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: calc(90px + env(safe-area-inset-bottom));
+  }
+
+  .cc-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .cc-photo-preview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cc-pwa-install-card {
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cc-pwa-install-actions button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .cc-photo-preview-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cc-vehicle-diagram-wrap {
+    padding: 6px;
+  }
+
+  .cc-diagram-zone text {
+    font-size: 10px;
+  }
+}

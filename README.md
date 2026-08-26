@@ -1,14 +1,6 @@
 # 🚗 Car Care App
 
-[![Deploy PWA](https://github.com/Desmond16170/Care-Car-app/actions/workflows/pages.yml/badge.svg)](https://github.com/Desmond16170/Care-Car-app/actions/workflows/pages.yml)
-[![Build Windows installer](https://github.com/Desmond16170/Care-Car-app/actions/workflows/windows.yml/badge.svg)](https://github.com/Desmond16170/Care-Car-app/actions/workflows/windows.yml)
-
-## Instalar o abrir
-
-- **PWA:** [Abrir Car Care en el navegador](https://desmond16170.github.io/Care-Car-app/). Desde Chrome o Edge se puede elegir **Instalar aplicación**.
-- **Windows:** descarga la versión permanente desde [Releases](https://github.com/Desmond16170/Care-Car-app/releases). En cada cambio de desarrollo también aparece una compilación temporal en [Actions → Build Windows installer](https://github.com/Desmond16170/Care-Car-app/actions/workflows/windows.yml) como artefacto **Car-Care-Windows**.
-
-La cuenta de empresa se crea únicamente desde una instalación de Windows con licencia válida. Después, esa misma cuenta puede iniciar sesión desde Windows o desde la PWA y compartir sus datos mediante Supabase.
+[![Build web and Windows](https://github.com/Desmond16170/Care-Car-app/actions/workflows/build.yml/badge.svg)](https://github.com/Desmond16170/Care-Car-app/actions/workflows/build.yml)
 
 **Car Care App** es una aplicación multiplataforma para Android y PC, diseñada para ayudar a usuarios y talleres a registrar vehículos, controlar mantenimientos y sincronizar datos en tiempo real.
 

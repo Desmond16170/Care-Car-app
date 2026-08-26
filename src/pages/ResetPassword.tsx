@@ -1,55 +1,89 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
+import ThemedButton from '../components/ThemedButton';
+import TextButton from '../components/TextButton';
+import { supabase } from '../lib/supabase';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
-  const [confirmation, setConfirmation] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setMessage('');
-    if (password !== confirmation) {
+    setIsError(false);
+
+    if (password.length < 8) {
+      setIsError(true);
+      setMessage('La contraseña debe tener al menos 8 caracteres.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
       setIsError(true);
       setMessage('Las contraseñas no coinciden.');
       return;
     }
 
+    if (!supabase) {
+      setIsError(true);
+      setMessage('Supabase todavía no está configurado en esta instalación.');
+      return;
+    }
+
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
+    setLoading(false);
+
     if (error) {
       setIsError(true);
-      setMessage('El enlace venció o no es válido. Solicita uno nuevo desde el inicio de sesión.');
-    } else {
-      setIsError(false);
-      setMessage('Contraseña actualizada. Ya puedes iniciar sesión.');
-      await supabase.auth.signOut();
-      window.setTimeout(() => navigate('/login', { replace: true }), 1200);
+      setMessage('El enlace de recuperación no es válido o ya venció. Solicita uno nuevo.');
+      return;
     }
-    setLoading(false);
+
+    setMessage('Contraseña actualizada correctamente. Ya puedes volver al taller.');
+    setPassword('');
+    setConfirmPassword('');
   };
 
   return (
-    <main className="auth-page auth-page--compact"><section className="auth-panel">
-      <div className="auth-card">
-        <p className="eyebrow">NUEVA CONTRASEÑA</p>
-        <h2>Protege tu cuenta</h2>
-        <p>Escribe una contraseña nueva para volver a ingresar.</p>
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="field-group"><label htmlFor="new-password">Nueva contraseña</label>
-            <input id="new-password" type="password" autoComplete="new-password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <small>Mínimo 8 caracteres.</small></div>
-          <div className="field-group"><label htmlFor="new-password-confirmation">Confirmar contraseña</label>
-            <input id="new-password-confirmation" type="password" autoComplete="new-password" minLength={8} value={confirmation} onChange={(e) => setConfirmation(e.target.value)} required /></div>
-          {message && <div className={isError ? 'form-error' : 'form-success'} role="status">{message}</div>}
-          <button className="primary-action" type="submit" disabled={loading}>{loading ? 'Guardando…' : 'Guardar contraseña'}</button>
+    <section className="cc-auth-page">
+      <div className="cc-auth-card">
+        <div className="cc-auth-brand">
+          <div className="cc-auth-logo"><span>CC</span></div>
+          <div>
+            <div className="cc-hero-kicker">Nueva contraseña</div>
+            <h1>Restablecer contraseña</h1>
+            <p>Elige una nueva contraseña para tu cuenta de Care Car.</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="cc-auth-form">
+          <label className="cc-field">
+            <span>Nueva contraseña</span>
+            <input className="cc-input" type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" minLength={8} required />
+          </label>
+          <label className="cc-field">
+            <span>Confirmar contraseña</span>
+            <input className="cc-input" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} autoComplete="new-password" minLength={8} required />
+          </label>
+
+          {message && <div className={isError ? 'cc-alert cc-alert-danger' : 'cc-alert cc-alert-info'}>{message}</div>}
+
+          <ThemedButton type="submit" disabled={loading}>
+            {loading ? 'Actualizando...' : 'Guardar nueva contraseña'}
+          </ThemedButton>
         </form>
+
+        <div className="cc-auth-secondary">
+          <TextButton onClick={() => navigate('/login')}>Volver a iniciar sesión</TextButton>
+        </div>
       </div>
-    </section></main>
+    </section>
   );
 };
 

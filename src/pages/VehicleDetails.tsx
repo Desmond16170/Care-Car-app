@@ -6,7 +6,10 @@ import {
   createMaintenance,
   findVehicleByPlate,
   listMaintenances,
+  listMileageLogs,
   MaintenanceRecord,
+  MileageLogRecord,
+  recordMileage,
   VehicleRecord,
 } from '../services/carCareData';
 
@@ -23,11 +26,20 @@ const VehicleDetails = () => {
   const { plate } = useParams();
   const [vehicle, setVehicle] = useState<VehicleRecord | null>(null);
   const [maintenances, setMaintenances] = useState<MaintenanceRecord[]>([]);
+  const [mileageLogs, setMileageLogs] = useState<MileageLogRecord[]>([]);
   const [form, setForm] = useState({ type: '', date: '', mileage: '', notes: '' });
+  const [mileageForm, setMileageForm] = useState({ mileage: '', notes: '' });
   const [showOilForm, setShowOilForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingMileage, setSavingMileage] = useState(false);
   const [error, setError] = useState('');
+  const [mileageMessage, setMileageMessage] = useState('');
+
+  const refreshMileageLogs = async (vehicleId: string) => {
+    const logs = await listMileageLogs(vehicleId);
+    setMileageLogs(logs);
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -45,11 +57,19 @@ const VehicleDetails = () => {
         setVehicle(found);
         if (!found) {
           setMaintenances([]);
+          setMileageLogs([]);
           return;
         }
 
-        const history = await listMaintenances(found.id);
-        if (mounted) setMaintenances(history);
+        const [history, logs] = await Promise.all([
+          listMaintenances(found.id),
+          listMileageLogs(found.id),
+        ]);
+
+        if (mounted) {
+          setMaintenances(history);
+          setMileageLogs(logs);
+        }
       } catch (err) {
         if (mounted) {
           setError(err instanceof Error ? err.message : 'No se pudieron cargar los datos del vehículo.');
@@ -97,6 +117,7 @@ const VehicleDetails = () => {
 
       setMaintenances(current => [saved, ...current]);
       updateVehicleMileageInView(saved.mileage);
+      await refreshMileageLogs(vehicle.id);
       setForm({ type: '', date: '', mileage: '', notes: '' });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo guardar el mantenimiento.');
@@ -105,9 +126,36 @@ const VehicleDetails = () => {
     }
   };
 
-  const handleOilChangeSaved = (saved: MaintenanceRecord) => {
+  const handleOilChangeSaved = async (saved: MaintenanceRecord) => {
     setMaintenances(current => [saved, ...current]);
     updateVehicleMileageInView(saved.mileage);
+    if (vehicle) await refreshMileageLogs(vehicle.id);
+  };
+
+  const handleMileageSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!vehicle) return;
+
+    const value = Number(mileageForm.mileage);
+    if (!Number.isFinite(value) || value < 0) {
+      setMileageMessage('Ingresa un kilometraje válido.');
+      return;
+    }
+
+    setSavingMileage(true);
+    setMileageMessage('');
+
+    try {
+      const saved = await recordMileage(vehicle.id, value, mileageForm.notes);
+      setMileageLogs(current => [saved, ...current]);
+      updateVehicleMileageInView(saved.mileage);
+      setMileageForm({ mileage: '', notes: '' });
+      setMileageMessage('Kilometraje guardado.');
+    } catch (err) {
+      setMileageMessage(err instanceof Error ? err.message : 'No se pudo guardar el kilometraje.');
+    } finally {
+      setSavingMileage(false);
+    }
   };
 
   if (loading) return <p style={{ textAlign: 'center' }}>Cargando vehículo...</p>;
@@ -126,7 +174,7 @@ const VehicleDetails = () => {
           <p><strong>Modelo:</strong> {vehicle.model}</p>
           {vehicle.year && <p><strong>Año:</strong> {vehicle.year}</p>}
           {vehicle.generation && <p><strong>Generación:</strong> {vehicle.generation}</p>}
-          <p><strong>Kilometraje:</strong> {vehicle.current_mileage} km</p>
+          <p><strong>Kilometraje actual:</strong> {vehicle.current_mileage.toLocaleString()} km</p>
 
           <ThemedButton onClick={handlePrint} className="mt-2">
             Imprimir Historial
@@ -145,42 +193,92 @@ const VehicleDetails = () => {
           )}
         </div>
 
-        <form onSubmit={handleAddMaintenance} style={{ flex: 1, minWidth: '300px' }}>
-          <h3>Agregar Mantenimiento</h3>
-          <input
-            type="text"
-            placeholder="Tipo (aceite, frenos...)"
-            value={form.type}
-            onChange={e => setForm({ ...form, type: e.target.value })}
-            required
-            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-          />
-          <input
-            type="date"
-            value={form.date}
-            onChange={e => setForm({ ...form, date: e.target.value })}
-            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-          />
-          <input
-            type="number"
-            min="0"
-            placeholder="Kilometraje"
-            value={form.mileage}
-            onChange={e => setForm({ ...form, mileage: e.target.value })}
-            required
-            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-          />
-          <textarea
-            placeholder="Notas (opcional)"
-            value={form.notes}
-            onChange={e => setForm({ ...form, notes: e.target.value })}
-            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
-          />
-          <ThemedButton type="submit" disabled={saving} className="w-full">
-            {saving ? 'Guardando...' : 'Guardar mantenimiento'}
-          </ThemedButton>
-        </form>
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <form onSubmit={handleAddMaintenance}>
+            <h3>Agregar Mantenimiento</h3>
+            <input
+              type="text"
+              placeholder="Tipo (aceite, frenos...)"
+              value={form.type}
+              onChange={e => setForm({ ...form, type: e.target.value })}
+              required
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <input
+              type="date"
+              value={form.date}
+              onChange={e => setForm({ ...form, date: e.target.value })}
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <input
+              type="number"
+              min="0"
+              placeholder="Kilometraje"
+              value={form.mileage}
+              onChange={e => setForm({ ...form, mileage: e.target.value })}
+              required
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <textarea
+              placeholder="Notas (opcional)"
+              value={form.notes}
+              onChange={e => setForm({ ...form, notes: e.target.value })}
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <ThemedButton type="submit" disabled={saving} className="w-full">
+              {saving ? 'Guardando...' : 'Guardar mantenimiento'}
+            </ThemedButton>
+          </form>
+
+          <form onSubmit={handleMileageSubmit} style={{ marginTop: '2rem' }}>
+            <h3>Actualizar Kilometraje</h3>
+            <input
+              type="number"
+              min="0"
+              placeholder="Kilometraje actual"
+              value={mileageForm.mileage}
+              onChange={e => setMileageForm({ ...mileageForm, mileage: e.target.value })}
+              required
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <input
+              type="text"
+              placeholder="Nota (opcional)"
+              value={mileageForm.notes}
+              onChange={e => setMileageForm({ ...mileageForm, notes: e.target.value })}
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <ThemedButton type="submit" disabled={savingMileage}>
+              {savingMileage ? 'Guardando...' : 'Guardar kilometraje'}
+            </ThemedButton>
+            {mileageMessage && (
+              <p style={{ marginTop: '8px', color: mileageMessage === 'Kilometraje guardado.' ? 'green' : 'red' }}>
+                {mileageMessage}
+              </p>
+            )}
+          </form>
+        </div>
       </div>
+
+      <h3 style={{ marginTop: '2rem' }}>Historial de Kilometraje</h3>
+      {mileageLogs.length === 0 ? (
+        <p>No hay registros de kilometraje.</p>
+      ) : (
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {mileageLogs.map(log => (
+            <li key={log.id} style={{
+              backgroundColor: '#f4f7f9',
+              padding: '12px 15px',
+              marginBottom: '8px',
+              borderRadius: '8px',
+            }}>
+              <strong>{log.mileage.toLocaleString()} km</strong>
+              <span> · {new Date(log.recorded_at).toLocaleDateString()}</span>
+              {log.notes && <div style={{ marginTop: '4px' }}>📝 {log.notes}</div>}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <h3 style={{ marginTop: '2rem' }}>Historial de Cambios de Aceite</h3>
       {oilHistory.length === 0 ? (

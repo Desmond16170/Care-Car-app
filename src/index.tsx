@@ -6,6 +6,7 @@ import { HashRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import './modern-ui.css';
+import './vehicle-details.css';
 import './modern-ui-overrides.css';
 
 const bg = localStorage.getItem('car-care-background-color');

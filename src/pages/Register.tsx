@@ -60,92 +60,58 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
     setPassword('');
   };
 
-  const inputStyle: React.CSSProperties = {
-    padding: '10px',
-    width: '100%',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    marginBottom: '10px',
-    outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
-    fontFamily: localStorage.getItem('car-care-font-family') || 'Arial',
-  };
-
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <h2>Crear cuenta</h2>
-      <p>Esta cuenta será la que sincronice tus datos entre Windows, Android, iPhone y navegador.</p>
+    <section className="cc-auth-page">
+      <div className="cc-auth-card cc-auth-card-wide">
+        <div className="cc-auth-brand">
+          <div className="cc-auth-logo"><span>CC</span></div>
+          <div>
+            <div className="cc-hero-kicker">Nueva cuenta</div>
+            <h1>Crear cuenta</h1>
+            <p>Una sola cuenta para Windows, celular, tablet y navegador.</p>
+          </div>
+        </div>
 
-      {!isSupabaseConfigured && (
-        <p style={{ color: '#b45309', fontWeight: 600 }}>
-          Modo de prueba: falta configurar la conexión con Supabase.
-        </p>
-      )}
+        {!isSupabaseConfigured && (
+          <div className="cc-alert cc-alert-info">Modo de prueba: falta configurar la conexión con Supabase.</div>
+        )}
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: 'auto' }}>
-        <input
-          type="text"
-          placeholder="Nombre completo"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          required
-          style={inputStyle}
-        />
-        <input
-          type="text"
-          placeholder="Número de identificación (opcional)"
-          value={identification}
-          onChange={e => setIdentification(e.target.value)}
-          style={inputStyle}
-        />
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          autoComplete="email"
-          required
-          style={inputStyle}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="new-password"
-          minLength={8}
-          required
-          style={inputStyle}
-        />
+        <form onSubmit={handleSubmit} className="cc-auth-form">
+          <div className="cc-field-grid">
+            <label className="cc-field cc-field-full">
+              <span>Nombre completo</span>
+              <input className="cc-input" type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nombre de la persona" required />
+            </label>
+            <label className="cc-field">
+              <span>Identificación</span>
+              <input className="cc-input" type="text" value={identification} onChange={e => setIdentification(e.target.value)} placeholder="Opcional" />
+            </label>
+            <label className="cc-field">
+              <span>Correo electrónico</span>
+              <input className="cc-input" type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" placeholder="nombre@correo.com" required />
+            </label>
+            <label className="cc-field cc-field-full">
+              <span>Contraseña</span>
+              <input className="cc-input" type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" minLength={8} placeholder="Mínimo 8 caracteres" required />
+              <small className="cc-field-help">Usa una contraseña que no compartas con otras cuentas.</small>
+            </label>
+          </div>
 
-        <ThemedButton
-          type="submit"
-          disabled={loading}
-          style={{
-            marginTop: '1rem',
-            padding: '10px 24px',
-            width: 'auto',
-            minWidth: '160px',
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-        >
-          {loading ? 'CREANDO...' : 'CREAR CUENTA'}
-        </ThemedButton>
-      </form>
+          {message && (
+            <div className={isError ? 'cc-alert cc-alert-danger' : 'cc-alert cc-alert-info'}>{message}</div>
+          )}
 
-      {message && (
-        <p style={{ marginTop: '10px', fontWeight: 'bold', color: isError ? 'red' : 'green' }}>
-          {message}
-        </p>
-      )}
+          <ThemedButton type="submit" disabled={loading}>
+            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+          </ThemedButton>
+        </form>
 
-      <p style={{ marginTop: '1rem' }}>
-        <TextButton onClick={() => (onBackToLogin ? onBackToLogin() : navigate('/login'))}>
-          Volver a iniciar sesión
-        </TextButton>
-      </p>
-    </div>
+        <div className="cc-auth-secondary">
+          <span>¿Ya tienes una cuenta?</span>
+          <TextButton onClick={() => (onBackToLogin ? onBackToLogin() : navigate('/login'))}>Volver a iniciar sesión</TextButton>
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -7,6 +7,12 @@ on:
       - care-car-2-supabase-netlify
   pull_request:
   workflow_dispatch:
+    inputs:
+      build_windows:
+        description: Build and publish the Windows installer
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -36,7 +42,7 @@ jobs:
 
   windows:
     name: Windows installer
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.build_windows
     runs-on: windows-latest
     env:
       CAR_CARE_SUPABASE_URL: ${{ secrets.CAR_CARE_SUPABASE_URL }}

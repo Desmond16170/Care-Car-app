@@ -43,14 +43,16 @@ const Dashboard = () => {
     };
 
     void loadDashboard();
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   const oilChanges = useMemo(
     () => maintenances.filter(m => m.details?.category === 'oil_change'),
+    [maintenances]
+  );
+
+  const recentMaintenances = useMemo(
+    () => [...maintenances].sort((a, b) => new Date(b.service_date).getTime() - new Date(a.service_date).getTime()).slice(0, 6),
     [maintenances]
   );
 
@@ -65,8 +67,7 @@ const Dashboard = () => {
   const orderedVehicles = useMemo(
     () => [...vehicles].sort((a, b) => {
       const difference = (recordCountByVehicle.get(b.id) || 0) - (recordCountByVehicle.get(a.id) || 0);
-      if (difference !== 0) return difference;
-      return (a.plate || '').localeCompare(b.plate || '');
+      return difference !== 0 ? difference : (a.plate || '').localeCompare(b.plate || '');
     }),
     [vehicles, recordCountByVehicle]
   );
@@ -84,114 +85,129 @@ const Dashboard = () => {
     ? maintenances.filter(m => m.vehicle_id === selectedVehicle.id)
     : [];
 
-  const selectedOilHistory = selectedHistory.filter(m => m.details?.category === 'oil_change');
-  const selectedGeneralHistory = selectedHistory.filter(m => m.details?.category !== 'oil_change');
-
-  const boxStyle: React.CSSProperties = {
-    backgroundColor: '#f1f1f1',
-    padding: '1rem',
-    borderRadius: '8px',
-    marginBottom: '1rem',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-  };
+  const vehicleById = useMemo(
+    () => new Map(vehicles.map(vehicle => [vehicle.id, vehicle])),
+    [vehicles]
+  );
 
   if (loading) {
-    return <p style={{ textAlign: 'center', padding: '2rem' }}>Cargando resumen...</p>;
+    return <div className="cc-card cc-empty">Cargando resumen del taller...</div>;
   }
 
   return (
-    <div style={{ padding: '2rem', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-      <div style={{ flex: 1, minWidth: '320px' }}>
-        <h2>Resumen del Taller</h2>
-        {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
+    <section className="cc-page">
+      <div className="cc-page-header">
+        <div>
+          <div className="cc-hero-kicker">Actividad</div>
+          <h1 className="cc-page-title">Resumen del taller</h1>
+          <p className="cc-page-subtitle">Lo importante del día, sin entrar a cada vehículo.</p>
+        </div>
+        <ThemedButton onClick={() => navigate('/tramado')} style={{ width: 'auto' }}>
+          Nueva recepción / tramado
+        </ThemedButton>
+      </div>
 
-        <div style={boxStyle}><strong>🚗 Vehículos registrados:</strong> {vehicles.length}</div>
-        <div style={boxStyle}><strong>🛠 Mantenimientos:</strong> {maintenances.length}</div>
-        <div style={boxStyle}><strong>🛢 Cambios de aceite:</strong> {oilChanges.length}</div>
+      {error && <div className="cc-alert cc-alert-danger">{error}</div>}
 
-        <div style={boxStyle}>
-          <strong>🚗🔧 Vehículos registrados:</strong>
-
-          <input
-            type="text"
-            placeholder="Buscar placa"
-            value={searchPlate}
-            onChange={e => setSearchPlate(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px',
-              marginTop: '10px',
-              marginBottom: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '4px'
-            }}
-          />
-
-          <ul style={{ paddingLeft: '1.2rem' }}>
-            {filteredVehicles.map(vehicle => (
-              <li key={vehicle.id}>
-                {vehicle.plate || 'Sin placa'} – {recordCountByVehicle.get(vehicle.id) || 0} registros
-              </li>
-            ))}
-            {filteredVehicles.length === 0 && <li>No hay coincidencias.</li>}
-          </ul>
+      <div className="cc-metric-grid">
+        <div className="cc-card cc-metric-card">
+          <span className="cc-metric-label">Vehículos activos</span>
+          <strong className="cc-metric-value">{vehicles.length}</strong>
+          <span className="cc-metric-caption">registrados en tu cuenta</span>
+        </div>
+        <div className="cc-card cc-metric-card">
+          <span className="cc-metric-label">Mantenimientos</span>
+          <strong className="cc-metric-value">{maintenances.length}</strong>
+          <span className="cc-metric-caption">registros históricos</span>
+        </div>
+        <div className="cc-card cc-metric-card">
+          <span className="cc-metric-label">Cambios de aceite</span>
+          <strong className="cc-metric-value">{oilChanges.length}</strong>
+          <span className="cc-metric-caption">dentro del historial</span>
         </div>
       </div>
 
-      {selectedVehicle && (
-        <div style={{ flex: 1, minWidth: '320px' }}>
-          <h2>
-            Historial de {selectedVehicle.make} {selectedVehicle.model}
-            {selectedVehicle.year ? ` ${selectedVehicle.year}` : ''} – Placa: {selectedVehicle.plate}
-          </h2>
-
-          <p><strong>Kilometraje actual:</strong> {selectedVehicle.current_mileage.toLocaleString()} km</p>
-
-          <ThemedButton
-            onClick={() => navigate(`/vehicle/${encodeURIComponent(selectedVehicle.plate || '')}`)}
-            style={{ width: 'auto', marginBottom: '1rem' }}
-          >
-            Ver perfil del vehículo
-          </ThemedButton>
-
-          {selectedGeneralHistory.length > 0 && (
-            <div style={boxStyle}>
-              <strong>🛠 Mantenimientos:</strong>
-              <ul style={{ paddingLeft: '1rem' }}>
-                {selectedGeneralHistory.map(m => (
-                  <li key={m.id} style={{ marginBottom: '8px' }}>
-                    {m.service_date} – {m.maintenance_type}
-                    {m.mileage != null && ` (${m.mileage.toLocaleString()} km)`}
-                    {m.notes && <div>📝 {m.notes}</div>}
-                  </li>
-                ))}
-              </ul>
+      <div className="cc-dashboard-grid">
+        <div className="cc-card cc-panel">
+          <div className="cc-panel-head">
+            <div>
+              <h2>Vehículos</h2>
+              <p>Busca una placa exacta para ver el historial aquí mismo.</p>
             </div>
-          )}
+            <ThemedButton onClick={() => navigate('/search')} style={{ width: 'auto' }}>
+              Ver todos
+            </ThemedButton>
+          </div>
 
-          {selectedOilHistory.length > 0 && (
-            <div style={boxStyle}>
-              <strong>🛢 Cambios de aceite:</strong>
-              <ul style={{ paddingLeft: '1rem' }}>
-                {selectedOilHistory.map(o => (
-                  <li key={o.id} style={{ marginBottom: '8px' }}>
-                    {o.service_date} – {String(o.details?.oil_type || o.maintenance_type)}
-                    {o.details?.brand ? `, ${String(o.details.brand)}` : ''}
-                    {o.details?.viscosity ? `, ${String(o.details.viscosity)}` : ''}
-                    {o.mileage != null && <div>{o.mileage.toLocaleString()} km</div>}
-                    {o.notes && <div>📝 {o.notes}</div>}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <input
+            className="cc-input"
+            type="search"
+            placeholder="Buscar placa..."
+            value={searchPlate}
+            onChange={e => setSearchPlate(e.target.value)}
+          />
 
-          {selectedHistory.length === 0 && (
-            <div style={boxStyle}>Este vehículo todavía no tiene mantenimientos registrados.</div>
-          )}
+          <div className="cc-compact-list">
+            {filteredVehicles.slice(0, 8).map(vehicle => (
+              <button
+                key={vehicle.id}
+                className="cc-list-row"
+                onClick={() => setSearchPlate(vehicle.plate || '')}
+              >
+                <div>
+                  <strong>{vehicle.plate || 'Sin placa'}</strong>
+                  <span>{vehicle.make} {vehicle.model}</span>
+                </div>
+                <div className="cc-list-row-end">
+                  <strong>{vehicle.current_mileage.toLocaleString()} km</strong>
+                  <span>{recordCountByVehicle.get(vehicle.id) || 0} registros</span>
+                </div>
+              </button>
+            ))}
+            {filteredVehicles.length === 0 && <div className="cc-empty-inline">No hay coincidencias.</div>}
+          </div>
         </div>
-      )}
-    </div>
+
+        <div className="cc-card cc-panel">
+          <div className="cc-panel-head">
+            <div>
+              <h2>{selectedVehicle ? selectedVehicle.plate : 'Actividad reciente'}</h2>
+              <p>{selectedVehicle ? `${selectedVehicle.make} ${selectedVehicle.model}` : 'Últimos mantenimientos registrados.'}</p>
+            </div>
+            {selectedVehicle && (
+              <ThemedButton
+                onClick={() => navigate(`/vehicle/${encodeURIComponent(selectedVehicle.plate || '')}`)}
+                style={{ width: 'auto' }}
+              >
+                Abrir vehículo
+              </ThemedButton>
+            )}
+          </div>
+
+          <div className="cc-activity-list">
+            {(selectedVehicle ? selectedHistory : recentMaintenances).map(item => {
+              const vehicle = selectedVehicle || vehicleById.get(item.vehicle_id);
+              return (
+                <div key={item.id} className="cc-activity-row">
+                  <div className="cc-activity-dot" />
+                  <div className="cc-activity-copy">
+                    <strong>{item.maintenance_type}</strong>
+                    <span>
+                      {vehicle?.plate ? `${vehicle.plate} · ` : ''}{item.service_date}
+                      {item.mileage != null ? ` · ${item.mileage.toLocaleString()} km` : ''}
+                    </span>
+                    {item.notes && <small>{item.notes}</small>}
+                  </div>
+                </div>
+              );
+            })}
+            {(selectedVehicle ? selectedHistory : recentMaintenances).length === 0 && (
+              <div className="cc-empty-inline">Todavía no hay actividad para mostrar.</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -6,6 +6,7 @@ import AddVehicle from './pages/AddVehicle';
 import SearchVehicles from './pages/SearchVehicles';
 import VehicleDetails from './pages/VehicleDetails';
 import Dashboard from './pages/Dashboard';
+import Tramado from './pages/Tramado';
 import ProtectedInstall from './components/ProtectedInstall';
 import InitialSetup from './pages/InitialSetup';
 import GuideAddVehicle from './pages/GuideAddVehicle';
@@ -14,6 +15,7 @@ const navItems = [
   { to: '/1', label: 'Inicio' },
   { to: '/dashboard', label: 'Resumen' },
   { to: '/search', label: 'Vehículos' },
+  { to: '/tramado', label: 'Tramado' },
   { to: '/add-vehicle-guided', label: 'Agregar' },
 ];
 
@@ -58,6 +60,7 @@ const App = () => {
             <Route path="/setup" element={<InitialSetup />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/search" element={<SearchVehicles />} />
+            <Route path="/tramado" element={<Tramado />} />
             <Route path="/add-vehicle" element={<AddVehicle />} />
             <Route path="/add-vehicle-guided" element={<GuideAddVehicle />} />
             <Route path="/vehicle/:plate" element={<VehicleDetails />} />

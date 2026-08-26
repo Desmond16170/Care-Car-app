@@ -1,58 +1,64 @@
 import React from 'react';
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import ProtectedInstall from './components/ProtectedInstall';
+import AppShell from './components/AppShell';
+import RequireAuth from './auth/RequireAuth';
+import { AuthProvider, useAuth } from './auth/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import AddVehicle from './pages/AddVehicle';
 import SearchVehicles from './pages/SearchVehicles';
 import VehicleDetails from './pages/VehicleDetails';
-import ProtectedInstall from './components/ProtectedInstall';
 import InitialSetup from './pages/InitialSetup';
 import GuideAddVehicle from './pages/GuideAddVehicle';
 import Settings from './pages/Settings';
 import Dashboard from './pages/Dashboard';
 
-const App = () => {
-  const isConfigured = localStorage.getItem('car-care-configured') === 'true';
-
-  const tallerName = localStorage.getItem('car-care-taller-name') || 'Taller';
-  const logo = localStorage.getItem('car-care-logo');
-
-  return (
-    <ProtectedInstall>
-      <div>
-        <header style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#e0e0e0' }}>
-          {logo && (
-            <img src={logo} alt="Logo Taller" style={{ height: '50px', marginRight: '15px' }} />
-          )}
-          <h1 style={{ margin: 0, fontSize: '1.5rem' }}>{tallerName}</h1>
-        </header>
-
-        <nav style={{ padding: '1rem', backgroundColor: '#f0f0f0', marginBottom: '1rem' }}>
-          <ul style={{ display: 'flex', gap: '20px', listStyle: 'none', padding: 0, margin: 0 }}>
-            <li><Link to="/1">Inicio</Link></li>
-            <li><Link to="/search">Buscar Vehículo</Link></li>
-            <li><Link to="/add-vehicle-guided">Agregar Vehículo</Link></li>
-            <li><Link to="/resumen">Resumen</Link></li>
-            <li><Link to="/settings">Configuración</Link></li>
-
-          </ul>
-        </nav>
-
-        <Routes>
-          <Route path="/" element={isConfigured ? <Navigate to="/1" /> : <InitialSetup />} />
-          <Route path="/1" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/search" element={<SearchVehicles />} />
-          <Route path="/add-vehicle" element={<AddVehicle />} />
-          <Route path="/add-vehicle-guided" element={<GuideAddVehicle />} />
-          <Route path="/vehicle/:plate" element={<VehicleDetails />} />
-          <Route path="/resumen" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-
-        </Routes>
-      </div>
-    </ProtectedInstall>
-  );
+const StartRoute = () => {
+  const configured = localStorage.getItem('car-care-configured') === 'true';
+  return <Navigate to={configured ? '/home' : '/setup'} replace />;
 };
+
+const PublicLogin = () => {
+  const { session, loading } = useAuth();
+  if (loading) {
+    return (
+      <main className="auth-loading">
+        <div className="auth-loading__mark">CC</div>
+        <h1>Car Care</h1>
+        <p>Preparando acceso…</p>
+      </main>
+    );
+  }
+  return session ? <StartRoute /> : <Login />;
+};
+
+const App = () => (
+  <ProtectedInstall>
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<PublicLogin />} />
+
+        <Route element={<RequireAuth />}>
+          <Route index element={<StartRoute />} />
+          <Route path="/setup" element={<InitialSetup />} />
+
+          <Route element={<AppShell />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/1" element={<Navigate to="/home" replace />} />
+            <Route path="/search" element={<SearchVehicles />} />
+            <Route path="/add-vehicle" element={<AddVehicle />} />
+            <Route path="/add-vehicle-guided" element={<GuideAddVehicle />} />
+            <Route path="/vehicle/:plate" element={<VehicleDetails />} />
+            <Route path="/resumen" element={<Dashboard />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
+  </ProtectedInstall>
+);
 
 export default App;

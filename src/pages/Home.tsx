@@ -1,41 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ThemedButton from '../components/ThemedButton';
-import { supabase } from '../services/supabaseClient';
-import { flushCloudState } from '../services/cloudSync';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 
 const Home = () => {
-  const [user, setUser] = useState<{ name: string } | null>(null);
-  const navigate = useNavigate();
-  const [tallerName, setTallerName] = useState('');
-
-  useEffect(() => {
-    setTallerName(localStorage.getItem('car-care-taller-name') || 'Car Care');
-    const activeUser = JSON.parse(localStorage.getItem('car-care-active-user') || 'null');
-    if (!activeUser) navigate('/login');
-    else setUser(activeUser);
-  }, [navigate]);
-
-  const handleLogout = async () => {
-    try { await flushCloudState(); } finally {
-      await supabase.auth.signOut();
-      localStorage.removeItem('car-care-active-user');
-      navigate('/login');
-    }
-  };
+  const { user } = useAuth();
+  const tallerName = localStorage.getItem('car-care-taller-name') || 'tu taller';
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuario';
 
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <img src={localStorage.getItem('car-care-logo') || '/logo-taller.png'}
-        alt="Logo Taller" style={{ width: 100, marginBottom: '1rem' }} />
-      <h1>Bienvenido a {tallerName}</h1>
-      <p>Gestión de vehículos y mantenimiento sincronizada en la nube</p>
-      <h2 style={{ fontSize: 24 }}>¡Bienvenido{user ? `, ${user.name}` : ''}!</h2>
-      <p>Selecciona una opción en el menú para continuar.</p>
-      <ThemedButton onClick={handleLogout}
-        style={{ marginTop: '2rem', padding: '10px 24px', minWidth: 160 }}>
-        Cerrar sesión
-      </ThemedButton>
+    <div className="home-page">
+      <section className="welcome-panel">
+        <span className="eyebrow">PANEL PRINCIPAL</span>
+        <h1>Hola, {displayName}</h1>
+        <p>Administra {tallerName} desde un solo lugar.</p>
+      </section>
+
+      <section className="quick-actions" aria-label="Acciones rápidas">
+        <Link to="/add-vehicle-guided" className="quick-action">
+          <span>+</span>
+          <strong>Registrar vehículo</strong>
+          <small>Agregar un vehículo al taller</small>
+        </Link>
+        <Link to="/search" className="quick-action">
+          <span>⌕</span>
+          <strong>Buscar vehículo</strong>
+          <small>Consultar perfil e historial</small>
+        </Link>
+        <Link to="/resumen" className="quick-action">
+          <span>▥</span>
+          <strong>Ver resumen</strong>
+          <small>Actividad y mantenimientos</small>
+        </Link>
+      </section>
     </div>
   );
 };

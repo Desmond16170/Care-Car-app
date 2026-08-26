@@ -90,6 +90,8 @@ create table if not exists public.reception_photos (
 
 create index if not exists reception_photos_reception_idx
   on public.reception_photos (reception_id, created_at);
+create index if not exists reception_photos_user_idx
+  on public.reception_photos (user_id);
 
 -- Consecutivo seguro por cuenta. El advisory lock evita números duplicados
 -- si dos recepciones se guardan al mismo tiempo.

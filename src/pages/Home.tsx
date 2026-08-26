@@ -16,7 +16,6 @@ const Home = () => {
 
   useEffect(() => {
     let mounted = true;
-
     const loadUser = async () => {
       if (!supabase) {
         if (mounted) setLoading(false);
@@ -24,34 +23,22 @@ const Home = () => {
       }
 
       const { data, error } = await supabase.auth.getUser();
-
       if (!mounted) return;
-
       if (error || !data.user) {
         navigate('/login', { replace: true });
         return;
       }
 
-      const name =
-        data.user.user_metadata?.full_name ||
-        data.user.email ||
-        'Usuario';
-
-      setUserName(name);
+      setUserName(data.user.user_metadata?.full_name || data.user.email || 'Usuario');
       setLoading(false);
     };
 
     void loadUser();
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [navigate]);
 
   const handleLogout = async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
-    }
+    if (supabase) await supabase.auth.signOut();
     navigate('/login', { replace: true });
   };
 
@@ -69,9 +56,7 @@ const Home = () => {
     );
   }
 
-  if (loading) {
-    return <p style={{ textAlign: 'center', padding: '2rem' }}>Cargando sesión...</p>;
-  }
+  if (loading) return <p style={{ textAlign: 'center', padding: '2rem' }}>Cargando sesión...</p>;
 
   return (
     <section className="cc-page">
@@ -80,13 +65,21 @@ const Home = () => {
           <div className="cc-hero-kicker">Panel de trabajo</div>
           <h1 className="cc-hero-title">{tallerName}</h1>
           <p className="cc-hero-copy">
-            Registra vehículos, consulta historiales y agrega mantenimientos sin perder tiempo entre pantallas.
+            Registra, recibe y consulta vehículos con el menor número de pasos posible.
           </p>
         </div>
         <div className="cc-user-chip">{userName}</div>
       </div>
 
       <div className="cc-grid cc-action-grid">
+        <button className="cc-action-card" onClick={() => navigate('/tramado')}>
+          <span className="cc-action-label">Recepción</span>
+          <div>
+            <h2 className="cc-action-title">Tramado / recibir vehículo</h2>
+            <p className="cc-action-copy">Documenta entrada, estado, daños, accesorios, firma y entrega.</p>
+          </div>
+        </button>
+
         <button className="cc-action-card" onClick={() => navigate('/search')}>
           <span className="cc-action-label">Buscar</span>
           <div>

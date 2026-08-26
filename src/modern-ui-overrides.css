@@ -1,0 +1,25 @@
+.cc-action-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1000px) {
+  .cc-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .cc-action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cc-bottom-nav {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .cc-bottom-link {
+    font-size: 0.64rem;
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+}

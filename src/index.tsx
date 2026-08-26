@@ -12,6 +12,7 @@ import './tramado.css';
 import './recepciones.css';
 import './customers-modules.css';
 import './pwa-mobile.css';
+import './mobile-polish.css';
 import './modern-ui-overrides.css';
 
 const bg = localStorage.getItem('car-care-background-color');

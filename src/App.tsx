@@ -15,6 +15,7 @@ import Customers from './pages/Customers';
 import CustomerDetails from './pages/CustomerDetails';
 import Settings from './pages/Settings';
 import ProtectedInstall from './components/ProtectedInstall';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 import InitialSetup from './pages/InitialSetup';
 import GuideAddVehicle from './pages/GuideAddVehicle';
 import { getModuleConfig, ModuleConfig, ModuleKey } from './lib/modules';
@@ -105,6 +106,8 @@ const App = () => {
         <nav className="cc-bottom-nav" aria-label="Navegación móvil">
           {coreNavItems.slice(0, 5).map(item => <NavLink key={item.to} to={item.to} className={({ isActive }) => `cc-bottom-link${isActive ? ' active' : ''}`}>{item.label}</NavLink>)}
         </nav>
+
+        <PWAInstallPrompt />
       </div>
     </ProtectedInstall>
   );

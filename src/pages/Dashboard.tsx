@@ -1,62 +1,91 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ThemedButton from '../components/ThemedButton';
+import {
+  listAllMaintenances,
+  listVehicles,
+  MaintenanceRecord,
+  normalizePlate,
+  VehicleRecord,
+} from '../services/carCareData';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
-  const [vehicleCount, setVehicleCount] = useState(0);
-  const [maintenanceCount, setMaintenanceCount] = useState(0);
-  const [oilChangeCount, setOilChangeCount] = useState(0);
-  const [topVehicles, setTopVehicles] = useState<{ plate: string, count: number }[]>([]);
+  const [vehicles, setVehicles] = useState<VehicleRecord[]>([]);
+  const [maintenances, setMaintenances] = useState<MaintenanceRecord[]>([]);
   const [searchPlate, setSearchPlate] = useState('');
-  const [maintenanceHistory, setMaintenanceHistory] = useState<any[]>([]);
-  const [oilChangeHistory, setOilChangeHistory] = useState<any[]>([]);
-  const [vehicleInfo, setVehicleInfo] = useState<{ make: string, model: string, year: string, plate: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const allVehicles = JSON.parse(localStorage.getItem('car-care-vehicles') || '{}');
-    const totalVehicles = Object.values(allVehicles).flat().length;
-    setVehicleCount(totalVehicles);
+    let mounted = true;
 
-    const allMaintenance = JSON.parse(localStorage.getItem('car-care-maintenance') || '{}');
-    const maintenanceTotal = Object.values(allMaintenance).flat().length;
-    setMaintenanceCount(maintenanceTotal);
+    const loadDashboard = async () => {
+      setLoading(true);
+      setError('');
 
-    const allOilChanges = JSON.parse(localStorage.getItem('car-care-oil-changes') || '{}');
-    const oilEntries = Object.entries(allOilChanges);
-    const oilTotal = oilEntries.reduce((acc, [, entries]) => acc + (entries as any[]).length, 0);
-    setOilChangeCount(oilTotal);
+      try {
+        const [vehicleRows, maintenanceRows] = await Promise.all([
+          listVehicles(),
+          listAllMaintenances(),
+        ]);
 
-    const vehicleMap: { [plate: string]: number } = {};
+        if (!mounted) return;
+        setVehicles(vehicleRows);
+        setMaintenances(maintenanceRows);
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : 'No se pudo cargar el resumen.');
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
 
-    for (const [plate, entries] of Object.entries(allMaintenance)) {
-      vehicleMap[plate] = (vehicleMap[plate] || 0) + (entries as any[]).length;
-    }
+    void loadDashboard();
 
-    for (const [plate, entries] of Object.entries(allOilChanges)) {
-      vehicleMap[plate] = (vehicleMap[plate] || 0) + (entries as any[]).length;
-    }
-
-    const top = Object.entries(vehicleMap)
-      .sort((a, b) => b[1] - a[1])
-      .map(([plate, count]) => ({ plate, count }));
-
-    setTopVehicles(top);
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  useEffect(() => {
-    const maint = JSON.parse(localStorage.getItem('car-care-maintenance') || '{}');
-    const oil = JSON.parse(localStorage.getItem('car-care-oil-changes') || '{}');
-    const allVehicles = JSON.parse(localStorage.getItem('car-care-vehicles') || '{}');
-    const vehiclesFlat = Object.values(allVehicles).flat() as any[];
+  const oilChanges = useMemo(
+    () => maintenances.filter(m => m.details?.category === 'oil_change'),
+    [maintenances]
+  );
 
-    const found = vehiclesFlat.find(v => v.plate.toLowerCase() === searchPlate.toLowerCase());
-    setVehicleInfo(found || null);
+  const recordCountByVehicle = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const maintenance of maintenances) {
+      counts.set(maintenance.vehicle_id, (counts.get(maintenance.vehicle_id) || 0) + 1);
+    }
+    return counts;
+  }, [maintenances]);
 
-    setMaintenanceHistory(maint[searchPlate] || []);
-    setOilChangeHistory(oil[searchPlate] || []);
-  }, [searchPlate]);
+  const orderedVehicles = useMemo(
+    () => [...vehicles].sort((a, b) => {
+      const difference = (recordCountByVehicle.get(b.id) || 0) - (recordCountByVehicle.get(a.id) || 0);
+      if (difference !== 0) return difference;
+      return (a.plate || '').localeCompare(b.plate || '');
+    }),
+    [vehicles, recordCountByVehicle]
+  );
+
+  const normalizedSearch = normalizePlate(searchPlate);
+  const filteredVehicles = orderedVehicles.filter(vehicle =>
+    (vehicle.plate || '').includes(normalizedSearch)
+  );
+
+  const selectedVehicle = normalizedSearch
+    ? vehicles.find(vehicle => vehicle.plate === normalizedSearch) || null
+    : null;
+
+  const selectedHistory = selectedVehicle
+    ? maintenances.filter(m => m.vehicle_id === selectedVehicle.id)
+    : [];
+
+  const selectedOilHistory = selectedHistory.filter(m => m.details?.category === 'oil_change');
+  const selectedGeneralHistory = selectedHistory.filter(m => m.details?.category !== 'oil_change');
 
   const boxStyle: React.CSSProperties = {
     backgroundColor: '#f1f1f1',
@@ -66,15 +95,19 @@ const Dashboard = () => {
     boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
   };
 
+  if (loading) {
+    return <p style={{ textAlign: 'center', padding: '2rem' }}>Cargando resumen...</p>;
+  }
+
   return (
     <div style={{ padding: '2rem', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-      {/* Columna izquierda */}
       <div style={{ flex: 1, minWidth: '320px' }}>
         <h2>Resumen del Taller</h2>
+        {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
 
-        <div style={boxStyle}><strong>🚗 Vehículos registrados:</strong> {vehicleCount}</div>
-        <div style={boxStyle}><strong>🛠 Mantenimientos:</strong> {maintenanceCount}</div>
-        <div style={boxStyle}><strong>🛢 Cambios de aceite:</strong> {oilChangeCount}</div>
+        <div style={boxStyle}><strong>🚗 Vehículos registrados:</strong> {vehicles.length}</div>
+        <div style={boxStyle}><strong>🛠 Mantenimientos:</strong> {maintenances.length}</div>
+        <div style={boxStyle}><strong>🛢 Cambios de aceite:</strong> {oilChanges.length}</div>
 
         <div style={boxStyle}>
           <strong>🚗🔧 Vehículos registrados:</strong>
@@ -87,51 +120,48 @@ const Dashboard = () => {
             style={{
               width: '100%',
               padding: '8px',
+              marginTop: '10px',
               marginBottom: '10px',
               border: '1px solid #ccc',
               borderRadius: '4px'
             }}
           />
 
-          <ul>
-            {topVehicles
-              .filter(v => v.plate.toLowerCase().includes(searchPlate.toLowerCase()))
-              .map(v => (
-                <li key={v.plate}>{v.plate} – {v.count} registros</li>
-              ))}
-            {topVehicles.filter(v => v.plate.toLowerCase().includes(searchPlate.toLowerCase())).length === 0 && (
-              <li>No hay coincidencias.</li>
-            )}
+          <ul style={{ paddingLeft: '1.2rem' }}>
+            {filteredVehicles.map(vehicle => (
+              <li key={vehicle.id}>
+                {vehicle.plate || 'Sin placa'} – {recordCountByVehicle.get(vehicle.id) || 0} registros
+              </li>
+            ))}
+            {filteredVehicles.length === 0 && <li>No hay coincidencias.</li>}
           </ul>
         </div>
       </div>
 
-      {/* Columna derecha: historial si hay placa exacta */}
-      {searchPlate && (maintenanceHistory.length > 0 || oilChangeHistory.length > 0) && (
+      {selectedVehicle && (
         <div style={{ flex: 1, minWidth: '320px' }}>
           <h2>
-            Historial de{' '}
-            {vehicleInfo
-              ? `${vehicleInfo.make} ${vehicleInfo.model} ${vehicleInfo.year} – Placa: ${searchPlate}`
-              : `Placa: ${searchPlate}`}
+            Historial de {selectedVehicle.make} {selectedVehicle.model}
+            {selectedVehicle.year ? ` ${selectedVehicle.year}` : ''} – Placa: {selectedVehicle.plate}
           </h2>
 
-          {vehicleInfo && (
-            <ThemedButton
-              onClick={() => navigate(`/vehicle/${vehicleInfo.plate}`)}
-              style={{ width: 'auto', marginBottom: '1rem' }}
-            >
-              Ver perfil del vehículo
-            </ThemedButton>
-          )}
+          <p><strong>Kilometraje actual:</strong> {selectedVehicle.current_mileage.toLocaleString()} km</p>
 
-          {maintenanceHistory.length > 0 && (
+          <ThemedButton
+            onClick={() => navigate(`/vehicle/${encodeURIComponent(selectedVehicle.plate || '')}`)}
+            style={{ width: 'auto', marginBottom: '1rem' }}
+          >
+            Ver perfil del vehículo
+          </ThemedButton>
+
+          {selectedGeneralHistory.length > 0 && (
             <div style={boxStyle}>
               <strong>🛠 Mantenimientos:</strong>
               <ul style={{ paddingLeft: '1rem' }}>
-                {maintenanceHistory.map((m, index) => (
-                  <li key={index}>
-                    {m.date} – {m.type} ({m.mileage} km)
+                {selectedGeneralHistory.map(m => (
+                  <li key={m.id} style={{ marginBottom: '8px' }}>
+                    {m.service_date} – {m.maintenance_type}
+                    {m.mileage != null && ` (${m.mileage.toLocaleString()} km)`}
                     {m.notes && <div>📝 {m.notes}</div>}
                   </li>
                 ))}
@@ -139,19 +169,25 @@ const Dashboard = () => {
             </div>
           )}
 
-          {oilChangeHistory.length > 0 && (
+          {selectedOilHistory.length > 0 && (
             <div style={boxStyle}>
               <strong>🛢 Cambios de aceite:</strong>
               <ul style={{ paddingLeft: '1rem' }}>
-                {oilChangeHistory.map((o, index) => (
-                  <li key={index}>
-                    {o.date} – {o.oilType}, {o.brand}, {o.viscosity}
-                    <div>{o.mileage} {o.unit}, siguiente: {o.mileageNextChange} {o.unit}</div>
+                {selectedOilHistory.map(o => (
+                  <li key={o.id} style={{ marginBottom: '8px' }}>
+                    {o.service_date} – {String(o.details?.oil_type || o.maintenance_type)}
+                    {o.details?.brand ? `, ${String(o.details.brand)}` : ''}
+                    {o.details?.viscosity ? `, ${String(o.details.viscosity)}` : ''}
+                    {o.mileage != null && <div>{o.mileage.toLocaleString()} km</div>}
                     {o.notes && <div>📝 {o.notes}</div>}
                   </li>
                 ))}
               </ul>
             </div>
+          )}
+
+          {selectedHistory.length === 0 && (
+            <div style={boxStyle}>Este vehículo todavía no tiene mantenimientos registrados.</div>
           )}
         </div>
       )}

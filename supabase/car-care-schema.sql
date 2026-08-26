@@ -15,6 +15,11 @@ create table if not exists public.profiles (
   updated_at timestamptz not null default now()
 );
 
+-- Compatibilidad con instalaciones anteriores donde profiles ya existía.
+alter table public.profiles
+  add column if not exists email text,
+  alter column full_name drop not null;
+
 create table if not exists public.vehicles (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,

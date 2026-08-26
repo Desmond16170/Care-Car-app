@@ -7,6 +7,7 @@ import App from './App';
 import './index.css';
 import './modern-ui.css';
 import './vehicle-details.css';
+import './auth-settings.css';
 import './modern-ui-overrides.css';
 
 const bg = localStorage.getItem('car-care-background-color');

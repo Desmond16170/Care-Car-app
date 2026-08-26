@@ -1,34 +1,43 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ThemedButton from '../components/ThemedButton';
-import TextButton from '../components/TextButton';
+import { findVehicleByPlate, normalizePlate, VehicleRecord } from '../services/carCareData';
 
 const SearchVehicles = () => {
   const [plate, setPlate] = useState('');
-  const [foundVehicle, setFoundVehicle] = useState<any | null>(null);
+  const [foundVehicle, setFoundVehicle] = useState<VehicleRecord | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSearch = (e?: React.FormEvent) => {
+  const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const allData = JSON.parse(localStorage.getItem('car-care-vehicles') || '{}');
-    const userLists = Object.values(allData) as any[][];
-    for (const list of userLists) {
-      const match = list.find(v => v.plate?.toLowerCase() === plate.toLowerCase());
-      if (match) {
-        setFoundVehicle(match);
-        setNotFound(false);
-        return;
-      }
-    }
+
+    setSearching(true);
+    setError('');
+    setNotFound(false);
     setFoundVehicle(null);
-    setNotFound(true);
+
+    try {
+      const match = await findVehicleByPlate(plate);
+      setFoundVehicle(match);
+      setNotFound(!match);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo buscar el vehículo.');
+    } finally {
+      setSearching(false);
+    }
   };
 
   const handleRegister = () => navigate('/add-vehicle');
-  const goToMaintenance = () => navigate(`/vehicle/${plate}`);
+  const goToMaintenance = () => {
+    if (foundVehicle?.plate) {
+      navigate(`/vehicle/${encodeURIComponent(foundVehicle.plate)}`);
+    }
+  };
 
-  const inputStyle = {
+  const inputStyle: React.CSSProperties = {
     padding: '10px',
     width: '100%',
     maxWidth: '300px',
@@ -52,15 +61,23 @@ const SearchVehicles = () => {
           onChange={e => setPlate(e.target.value)}
           style={inputStyle}
         />
-        <ThemedButton type="submit" style={{ width: '100%' }}>
-          Buscar
+        <ThemedButton type="submit" disabled={searching || !normalizePlate(plate)} style={{ width: '100%' }}>
+          {searching ? 'Buscando...' : 'Buscar'}
         </ThemedButton>
       </form>
+
+      {error && (
+        <p style={{ color: 'red', marginTop: '1rem', textAlign: 'center' }}>{error}</p>
+      )}
 
       {foundVehicle && (
         <div style={{ marginTop: '2rem', textAlign: 'center' }}>
           <p><strong>Vehículo encontrado:</strong></p>
-          <p>{foundVehicle.make} {foundVehicle.model} ({foundVehicle.year}) - {foundVehicle.mileage} km</p>
+          <p>
+            {foundVehicle.make} {foundVehicle.model}
+            {foundVehicle.year ? ` (${foundVehicle.year})` : foundVehicle.generation ? ` (${foundVehicle.generation})` : ''}
+            {' - '}{foundVehicle.current_mileage} km
+          </p>
           <ThemedButton onClick={goToMaintenance} className="mt-2">
             Ver mantenimiento
           </ThemedButton>
@@ -69,7 +86,7 @@ const SearchVehicles = () => {
 
       {notFound && (
         <div style={{ marginTop: '2rem', color: 'red', textAlign: 'center' }}>
-          <p>No se encontraron vehículos con esa placa.</p>
+          <p>No se encontraron vehículos con esa placa en tu cuenta.</p>
           <ThemedButton onClick={handleRegister} className="mt-2">
             Registrar un nuevo vehículo
           </ThemedButton>

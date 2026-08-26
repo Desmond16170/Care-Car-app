@@ -1,53 +1,69 @@
 import React, { useEffect, useState } from 'react';
 
-const fs = window.require('fs');
-const path = window.require('path');
-const crypto = window.require('crypto');
-const { dialog } = window.require('@electron/remote');
-const { app } = window.require('electron').remote || window.require('@electron/remote');
-
 const SECRET_KEY = '18293018082JZGTe30';
 
+const isElectronRuntime = () =>
+  typeof window !== 'undefined' && typeof (window as any).require === 'function';
+
 const ProtectedInstall: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isValid, setIsValid] = useState(false);
-  const [licenseChecked, setLicenseChecked] = useState(false);
+  const [isValid, setIsValid] = useState(!isElectronRuntime());
+  const [licenseChecked, setLicenseChecked] = useState(!isElectronRuntime());
 
-  const licensePath = path.join(app.getPath('userData'), 'license.json');
+  useEffect(() => {
+    if (!isElectronRuntime()) return;
 
-  const verificarLicencia = () => {
-    try {
-      if (!fs.existsSync(licensePath)) {
-        console.warn('❌ license.json no encontrado');
+    const verificarLicencia = () => {
+      try {
+        const req = (window as any).require;
+        const fs = req('fs');
+        const path = req('path');
+        const crypto = req('crypto');
+        const remote = req('@electron/remote');
+        const app = remote.app;
+        const licensePath = path.join(app.getPath('userData'), 'license.json');
+
+        if (!fs.existsSync(licensePath)) {
+          console.warn('❌ license.json no encontrado');
+          setLicenseChecked(true);
+          return;
+        }
+
+        const licenseRaw = fs.readFileSync(licensePath, 'utf-8');
+        const licenseData = JSON.parse(licenseRaw);
+        const { signature, ...licenseInfo } = licenseData;
+        const message = JSON.stringify(licenseInfo, Object.keys(licenseInfo).sort());
+        const expectedSignature = crypto
+          .createHmac('sha256', SECRET_KEY)
+          .update(message)
+          .digest('hex');
+        const notExpired = new Date(licenseInfo.expires) >= new Date();
+
+        if (expectedSignature === signature && notExpired) {
+          setIsValid(true);
+        } else {
+          console.warn('⚠ Licencia inválida o expirada');
+        }
+      } catch (error) {
+        console.error('🚨 Error al validar la licencia:', error);
+      } finally {
         setLicenseChecked(true);
-        return;
       }
+    };
 
-      const licenseRaw = fs.readFileSync(licensePath, 'utf-8');
-      const licenseData = JSON.parse(licenseRaw);
-
-      const { signature, ...licenseInfo } = licenseData;
-      const message = JSON.stringify(licenseInfo, Object.keys(licenseInfo).sort());
-      const expectedSignature = crypto
-        .createHmac('sha256', SECRET_KEY)
-        .update(message)
-        .digest('hex');
-
-      const notExpired = new Date(licenseInfo.expires) >= new Date();
-
-      if (expectedSignature === signature && notExpired) {
-        console.log("✅ Licencia válida");
-        setIsValid(true);
-      } else {
-        console.warn('⚠ Licencia inválida o expirada');
-      }
-    } catch (error) {
-      console.error('🚨 Error al validar la licencia:', error);
-    } finally {
-      setLicenseChecked(true);
-    }
-  };
+    verificarLicencia();
+  }, []);
 
   const handleLoadLicense = async () => {
+    if (!isElectronRuntime()) return;
+
+    const req = (window as any).require;
+    const fs = req('fs');
+    const path = req('path');
+    const remote = req('@electron/remote');
+    const app = remote.app;
+    const dialog = remote.dialog;
+    const licensePath = path.join(app.getPath('userData'), 'license.json');
+
     const result = await dialog.showOpenDialog({
       title: 'Selecciona el archivo de licencia',
       filters: [{ name: 'Licencia', extensions: ['json'] }],
@@ -58,19 +74,15 @@ const ProtectedInstall: React.FC<{ children: React.ReactNode }> = ({ children })
       try {
         const selectedPath = result.filePaths[0];
         const content = fs.readFileSync(selectedPath, 'utf-8');
-        JSON.parse(content); // validación básica
+        JSON.parse(content);
         fs.copyFileSync(selectedPath, licensePath);
         alert('✅ Licencia cargada. La app se reiniciará.');
         location.reload();
-      } catch (err) {
+      } catch {
         alert('❌ Archivo inválido.');
       }
     }
   };
-
-  useEffect(() => {
-    verificarLicencia();
-  }, []);
 
   if (!licenseChecked) {
     return <p style={{ textAlign: 'center', marginTop: '3rem' }}>Verificando licencia...</p>;

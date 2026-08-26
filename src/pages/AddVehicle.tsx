@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ThemedButton from '../components/ThemedButton';
-import PasswordInput from '../components/PasswordInput';
+import { createVehicle, getCurrentUser } from '../services/carCareData';
 
 const AddVehicle = () => {
   const [make, setMake] = useState('');
@@ -9,56 +9,57 @@ const AddVehicle = () => {
   const [mileage, setMileage] = useState('');
   const [plate, setPlate] = useState('');
   const [message, setMessage] = useState('');
-  const [activeUser, setActiveUser] = useState<any>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const loggedUser = JSON.parse(localStorage.getItem('car-care-active-user') || 'null');
-    setActiveUser(loggedUser);
+    let mounted = true;
+
+    getCurrentUser()
+      .then(() => mounted && setIsAuthenticated(true))
+      .catch(() => mounted && setIsAuthenticated(false));
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const handleAddVehicle = (e: React.FormEvent) => {
+  const handleAddVehicle = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    setMessage('');
 
-    if (!activeUser || !activeUser.name) {
-      setMessage('Debes iniciar sesión para agregar vehículos.');
-      return;
+    try {
+      await createVehicle({
+        make,
+        model,
+        year: Number(year),
+        currentMileage: Number(mileage),
+        plate,
+      });
+
+      setMessage('¡Vehículo guardado con éxito!');
+      setMake('');
+      setModel('');
+      setYear('');
+      setMileage('');
+      setPlate('');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'No se pudo guardar el vehículo.');
+    } finally {
+      setSaving(false);
     }
-
-    const vehicle = {
-      make,
-      model,
-      year,
-      mileage,
-      plate,
-      registeredBy: activeUser.name,
-    };
-
-    const allVehicles = JSON.parse(localStorage.getItem('car-care-vehicles') || '{}');
-    const userVehicles = allVehicles[activeUser.name] || [];
-
-    const duplicate = userVehicles.find((v: any) => v.plate === plate);
-    if (duplicate) {
-      setMessage('Ya existe un vehículo con esa placa.');
-      return;
-    }
-
-    userVehicles.push(vehicle);
-    allVehicles[activeUser.name] = userVehicles;
-    localStorage.setItem('car-care-vehicles', JSON.stringify(allVehicles));
-
-    setMessage('¡Vehículo guardado con éxito!');
-    setMake('');
-    setModel('');
-    setYear('');
-    setMileage('');
-    setPlate('');
   };
 
-  if (!activeUser) {
+  if (isAuthenticated === null) {
+    return <p style={{ textAlign: 'center' }}>Comprobando sesión...</p>;
+  }
+
+  if (!isAuthenticated) {
     return <p style={{ color: 'red', textAlign: 'center' }}>Debes iniciar sesión para acceder a esta página.</p>;
   }
 
-  const inputStyle = {
+  const inputStyle: React.CSSProperties = {
     padding: '10px',
     width: '100%',
     border: '1px solid #ccc',
@@ -76,11 +77,12 @@ const AddVehicle = () => {
         <input type="text" placeholder="Placa" value={plate} onChange={e => setPlate(e.target.value)} required style={inputStyle} />
         <input type="text" placeholder="Marca" value={make} onChange={e => setMake(e.target.value)} required style={inputStyle} />
         <input type="text" placeholder="Modelo" value={model} onChange={e => setModel(e.target.value)} required style={inputStyle} />
-        <input type="number" placeholder="Año" value={year} onChange={e => setYear(e.target.value)} required style={inputStyle} />
-        <input type="number" placeholder="Kilometraje" value={mileage} onChange={e => setMileage(e.target.value)} required style={inputStyle} />
+        <input type="number" placeholder="Año" value={year} onChange={e => setYear(e.target.value)} min="1886" max="2200" required style={inputStyle} />
+        <input type="number" placeholder="Kilometraje" value={mileage} onChange={e => setMileage(e.target.value)} min="0" required style={inputStyle} />
 
         <ThemedButton
           type="submit"
+          disabled={saving}
           style={{
             marginTop: '1rem',
             padding: '10px 24px',
@@ -91,7 +93,7 @@ const AddVehicle = () => {
             marginRight: 'auto'
           }}
         >
-          Guardar Vehículo
+          {saving ? 'Guardando...' : 'Guardar Vehículo'}
         </ThemedButton>
 
         {message && (

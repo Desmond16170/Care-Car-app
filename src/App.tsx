@@ -3,6 +3,7 @@ import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import ProtectedInstall from './components/ProtectedInstall';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import { getModuleConfig, ModuleConfig, ModuleKey } from './lib/modules';
+import { AuthProvider, useAuth } from './auth/AuthContext';
 
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
@@ -51,12 +52,13 @@ const AppRoutes: React.FC<{ modules: ModuleConfig }> = ({ modules }) => (
   </Suspense>
 );
 
-const App = () => {
+const AppContent = () => {
   const location = useLocation();
+  const { session, loading } = useAuth();
   const [modules, setModules] = useState<ModuleConfig>(getModuleConfig());
   const tallerName = localStorage.getItem('car-care-taller-name') || 'Care Car';
   const logo = localStorage.getItem('car-care-logo');
-  const isAuthView = ['/login', '/register', '/forgot-password', '/reset-password', '/setup'].includes(location.pathname);
+  const isPublicAuthView = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
 
   useEffect(() => {
     const refresh = () => setModules(getModuleConfig());
@@ -80,9 +82,16 @@ const App = () => {
     return items.filter(item => item.enabled);
   }, [modules]);
 
-  if (isAuthView) {
+  if (loading) {
+    return <main className="auth-loading" aria-live="polite"><div className="auth-loading__mark">CC</div><h1>Care Car</h1><p>Verificando sesión segura…</p></main>;
+  }
+
+  if (isPublicAuthView) {
+    if (session && location.pathname === '/login') return <Navigate to="/1" replace />;
     return <ProtectedInstall><div className="cc-auth-root"><AppRoutes modules={modules} /></div></ProtectedInstall>;
   }
+
+  if (!session) return <Navigate to="/login" replace />;
 
   return (
     <ProtectedInstall>
@@ -115,5 +124,7 @@ const App = () => {
     </ProtectedInstall>
   );
 };
+
+const App = () => <AuthProvider><AppContent /></AuthProvider>;
 
 export default App;

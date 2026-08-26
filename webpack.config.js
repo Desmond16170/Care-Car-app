@@ -31,7 +31,7 @@ module.exports = {
     },
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'assets/[name].[contenthash:8].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: 'auto',
     clean: true,

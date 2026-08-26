@@ -1,5 +1,12 @@
-const CACHE_NAME = 'care-car-shell-v1';
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/care-car-icon.svg'];
+const CACHE_NAME = 'care-car-shell-v2';
+const APP_SHELL = [
+  '/',
+  '/index.html',
+  '/manifest.webmanifest',
+  '/icons/care-car-icon.svg',
+  '/icons/care-car-icon-192.png',
+  '/icons/care-car-icon-512.png',
+];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -37,7 +44,22 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (['script', 'style', 'image', 'font'].includes(request.destination)) {
+  if (['script', 'style'].includes(request.destination)) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  if (['image', 'font'].includes(request.destination)) {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(response => {
         if (response.ok) {

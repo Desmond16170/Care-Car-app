@@ -34,6 +34,13 @@ export interface ReceptionRecord {
   updated_at: string;
 }
 
+export type ReceptionStatus = ReceptionRecord['status'];
+
+export interface ReceptionWithDetails extends ReceptionRecord {
+  customer: CustomerRecord | null;
+  vehicle: VehicleRecord | null;
+}
+
 export interface DamageRecord { zone: string; note?: string; }
 export interface ReceptionInspectionRecord {
   id: string; user_id: string; reception_id: string; accessories: string[]; damages: DamageRecord[];
@@ -57,6 +64,16 @@ const getClient = () => {
 };
 const cleanOptional = (value?: string) => value?.trim() || null;
 export const formatReceptionNumber = (number: number) => `REC-${String(number).padStart(6, '0')}`;
+
+const RECEPTION_STATUS_LABELS: Record<ReceptionStatus, string> = {
+  received: 'Recibido',
+  in_progress: 'En trabajo',
+  ready: 'Listo',
+  delivered: 'Entregado',
+  cancelled: 'Cancelado',
+};
+
+export const getReceptionStatusLabel = (status: ReceptionStatus) => RECEPTION_STATUS_LABELS[status];
 
 export const searchCustomers = async (query = ''): Promise<CustomerRecord[]> => {
   const client = getClient();
@@ -188,11 +205,16 @@ export const uploadReceptionPhotos = async (receptionId: string, files: File[], 
   return results;
 };
 
-export const listRecentReceptions = async (limit = 100): Promise<ReceptionRecord[]> => {
+export const listRecentReceptions = async (limit = 100): Promise<ReceptionWithDetails[]> => {
   const client = getClient(); const user = await getCurrentUser();
-  const { data, error } = await client.from('workshop_receptions').select('*').eq('user_id', user.id).order('received_at', { ascending: false }).limit(limit);
+  const { data, error } = await client
+    .from('workshop_receptions')
+    .select('*, customer:customers(*), vehicle:vehicles(*)')
+    .eq('user_id', user.id)
+    .order('received_at', { ascending: false })
+    .limit(limit);
   if (error) throw error;
-  return (data ?? []) as ReceptionRecord[];
+  return (data ?? []) as unknown as ReceptionWithDetails[];
 };
 
 export const updateReceptionStatus = async (receptionId: string, status: ReceptionRecord['status']): Promise<ReceptionRecord> => {
@@ -211,6 +233,18 @@ export const getReceptionDetails = async (receptionId: string) => {
   return data as any;
 };
 
+export const getReceptionInspection = async (receptionId: string): Promise<ReceptionInspectionRecord | null> => {
+  const client = getClient(); const user = await getCurrentUser();
+  const { data, error } = await client
+    .from('reception_inspections')
+    .select('*')
+    .eq('reception_id', receptionId)
+    .eq('user_id', user.id)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as ReceptionInspectionRecord | null) ?? null;
+};
+
 export const uploadReceptionSignature = async (receptionId: string, blob: Blob): Promise<string> => {
   const client = getClient(); const user = await getCurrentUser();
   const path = `${user.id}/${receptionId}/signature.png`;
@@ -221,9 +255,13 @@ export const uploadReceptionSignature = async (receptionId: string, blob: Blob):
   return path;
 };
 
+export const saveReceptionSignature = uploadReceptionSignature;
+
 export const getPrivateReceptionAssetUrl = async (path: string, expiresIn = 300): Promise<string> => {
   const client = getClient();
   const { data, error } = await client.storage.from('reception-photos').createSignedUrl(path, expiresIn);
   if (error) throw error;
   return data.signedUrl;
 };
+
+export const getPrivateImageUrl = getPrivateReceptionAssetUrl;

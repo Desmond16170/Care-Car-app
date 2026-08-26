@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
+    "target": "ES2019",
+    "module": "ESNext",
     "jsx": "react",
     "strict": true,
     "moduleResolution": "node",

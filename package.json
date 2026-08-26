@@ -10,16 +10,20 @@
     "start": "electron .",
     "build": "webpack --mode=production",
     "build:web": "webpack --mode=production",
-    "dist": "npm run build && electron-builder"
+    "typecheck": "tsc --noEmit",
+    "ci:web": "npm run typecheck && npm run build:web",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win nsis --publish never"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.7",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "autoprefixer": "^10.4.21",
+    "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.2",
-    "electron": "^27.3.11",
-    "electron-builder": "^24.13.3",
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3",
     "html-webpack-plugin": "^5.6.3",
     "postcss": "^8.5.3",
     "postcss-loader": "^8.1.1",
@@ -32,11 +36,8 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.1",
     "@supabase/supabase-js": "2.112.4",
     "global": "^4.4.0",
-    "jspdf": "^3.0.1",
-    "jspdf-autotable": "^5.0.2",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -46,7 +47,8 @@
     "appId": "com.carcare.app",
     "productName": "Car Care Taller",
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "assets",
+      "output": "release"
     },
     "files": [
       "dist/**/*",
@@ -58,6 +60,13 @@
     "win": {
       "target": "nsis",
       "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Car Care Taller"
     }
   }
 }

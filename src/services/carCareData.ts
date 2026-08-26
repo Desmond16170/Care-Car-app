@@ -30,6 +30,14 @@ export interface MaintenanceRecord {
   updated_at: string;
 }
 
+export interface MileageLogRecord {
+  id: string;
+  vehicle_id: string;
+  mileage: number;
+  recorded_at: string;
+  notes: string | null;
+}
+
 export interface CreateVehicleInput {
   make: string;
   model: string;
@@ -87,10 +95,33 @@ const getCurrentDisplayName = async (user: User): Promise<string> => {
   );
 };
 
+const updateCurrentMileage = async (vehicleId: string, mileage: number) => {
+  const client = getClient();
+  const safeMileage = Math.max(0, mileage);
+
+  const { data: vehicle, error: vehicleError } = await client
+    .from('vehicles')
+    .select('current_mileage')
+    .eq('id', vehicleId)
+    .maybeSingle();
+
+  if (vehicleError) throw vehicleError;
+
+  if (vehicle && safeMileage > (vehicle.current_mileage ?? 0)) {
+    const { error } = await client
+      .from('vehicles')
+      .update({ current_mileage: safeMileage })
+      .eq('id', vehicleId);
+
+    if (error) throw error;
+  }
+};
+
 export const createVehicle = async (input: CreateVehicleInput): Promise<VehicleRecord> => {
   const client = getClient();
   const user = await getCurrentUser();
   const plate = normalizePlate(input.plate);
+  const currentMileage = Math.max(0, input.currentMileage ?? 0);
 
   if (!plate) throw new Error('La placa es obligatoria.');
 
@@ -104,7 +135,7 @@ export const createVehicle = async (input: CreateVehicleInput): Promise<VehicleR
       generation: input.generation?.trim() || null,
       plate,
       vin: input.vin?.trim() || null,
-      current_mileage: Math.max(0, input.currentMileage ?? 0),
+      current_mileage: currentMileage,
       nickname: input.nickname?.trim() || null,
     })
     .select('*')
@@ -117,7 +148,35 @@ export const createVehicle = async (input: CreateVehicleInput): Promise<VehicleR
     throw error;
   }
 
-  return data as VehicleRecord;
+  const vehicle = data as VehicleRecord;
+
+  if (currentMileage > 0) {
+    const { error: mileageError } = await client.from('mileage_logs').insert({
+      vehicle_id: vehicle.id,
+      mileage: currentMileage,
+      notes: 'Kilometraje inicial al registrar el vehículo',
+    });
+
+    if (mileageError) {
+      console.warn('El vehículo se guardó, pero no se pudo crear el kilometraje inicial.', mileageError);
+    }
+  }
+
+  return vehicle;
+};
+
+export const listVehicles = async (): Promise<VehicleRecord[]> => {
+  const client = getClient();
+  const user = await getCurrentUser();
+
+  const { data, error } = await client
+    .from('vehicles')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as VehicleRecord[];
 };
 
 export const findVehicleByPlate = async (plateInput: string): Promise<VehicleRecord | null> => {
@@ -152,6 +211,20 @@ export const listMaintenances = async (vehicleId: string): Promise<MaintenanceRe
   return (data ?? []) as MaintenanceRecord[];
 };
 
+export const listAllMaintenances = async (): Promise<MaintenanceRecord[]> => {
+  const client = getClient();
+  await getCurrentUser();
+
+  const { data, error } = await client
+    .from('maintenances')
+    .select('*')
+    .order('service_date', { ascending: false })
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as MaintenanceRecord[];
+};
+
 export const createMaintenance = async (
   input: CreateMaintenanceInput
 ): Promise<MaintenanceRecord> => {
@@ -178,23 +251,61 @@ export const createMaintenance = async (
   if (error) throw error;
 
   if (mileage != null) {
-    const { data: vehicle } = await client
-      .from('vehicles')
-      .select('current_mileage')
-      .eq('id', input.vehicleId)
-      .maybeSingle();
+    const { error: logError } = await client.from('mileage_logs').insert({
+      vehicle_id: input.vehicleId,
+      mileage,
+      recorded_at: `${input.serviceDate || new Date().toISOString().slice(0, 10)}T12:00:00Z`,
+      notes: `Mantenimiento: ${input.maintenanceType.trim()}`,
+    });
 
-    if (vehicle && mileage > (vehicle.current_mileage ?? 0)) {
-      const { error: mileageError } = await client
-        .from('vehicles')
-        .update({ current_mileage: mileage })
-        .eq('id', input.vehicleId);
+    if (logError) {
+      console.warn('El mantenimiento se guardó, pero no se pudo registrar el kilometraje histórico.', logError);
+    }
 
-      if (mileageError) {
-        console.warn('El mantenimiento se guardó, pero no se pudo actualizar el kilometraje.', mileageError);
-      }
+    try {
+      await updateCurrentMileage(input.vehicleId, mileage);
+    } catch (mileageError) {
+      console.warn('El mantenimiento se guardó, pero no se pudo actualizar el kilometraje.', mileageError);
     }
   }
 
   return data as MaintenanceRecord;
+};
+
+export const listMileageLogs = async (vehicleId: string): Promise<MileageLogRecord[]> => {
+  const client = getClient();
+
+  const { data, error } = await client
+    .from('mileage_logs')
+    .select('*')
+    .eq('vehicle_id', vehicleId)
+    .order('recorded_at', { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as MileageLogRecord[];
+};
+
+export const recordMileage = async (
+  vehicleId: string,
+  mileage: number,
+  notes?: string
+): Promise<MileageLogRecord> => {
+  const client = getClient();
+  await getCurrentUser();
+  const safeMileage = Math.max(0, mileage);
+
+  const { data, error } = await client
+    .from('mileage_logs')
+    .insert({
+      vehicle_id: vehicleId,
+      mileage: safeMileage,
+      notes: notes?.trim() || null,
+    })
+    .select('*')
+    .single();
+
+  if (error) throw error;
+
+  await updateCurrentMileage(vehicleId, safeMileage);
+  return data as MileageLogRecord;
 };

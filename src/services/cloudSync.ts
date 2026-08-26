@@ -55,7 +55,14 @@ export async function hydrateCloudState() {
     .maybeSingle();
 
   if (error) throw error;
-  applySnapshot((data?.data || {}) as Record<string, string>);
+  const cloudData = (data?.data || {}) as Record<string, string>;
+  if (Object.keys(cloudData).length > 0) {
+    applySnapshot(cloudData);
+    dirty = false;
+  } else if (Object.keys(snapshot()).length > 0) {
+    // Primera conexión: conserva y sube los datos que ya existían en este equipo.
+    dirty = true;
+  }
 
   localStorage.setItem('car-care-active-user', JSON.stringify({
     id: user.id,
@@ -63,7 +70,7 @@ export async function hydrateCloudState() {
     cedula: user.user_metadata?.identification || '',
     email: user.email,
   }));
-  dirty = false;
+  if (dirty) await flushCloudState();
   return true;
 }
 
@@ -116,7 +123,6 @@ export async function startCloudSync() {
   supabase.auth.onAuthStateChange((event) => {
     if (event === 'SIGNED_OUT') {
       localStorage.removeItem('car-care-active-user');
-      if (timer) clearInterval(timer);
     }
   });
 }

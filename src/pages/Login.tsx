@@ -1,85 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Register from './Register';
 import PasswordRecoveryModal from '../components/PasswordRecoveryModal';
 import ThemedButton from '../components/ThemedButton';
 import TextButton from '../components/TextButton';
+import { supabase } from '../services/supabaseClient';
+import { hydrateCloudState } from '../services/cloudSync';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [cedula, setCedula] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [installVerified, setInstallVerified] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showRecovery, setShowRecovery] = useState(false);
-  const [licenseKeyExpected, setLicenseKeyExpected] = useState('');
 
-  useEffect(() => {
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const { app } = window.require('@electron/remote');
-    const licensePath = path.join(app.getPath('userData'), 'license.json');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
+    if (authError) {
+      setError('Correo o contraseña incorrectos.');
+      setLoading(false);
+      return;
+    }
 
     try {
-      const installKey = localStorage.getItem('car-care-install-key') || '';
-      const licenseRaw = fs.readFileSync(licensePath, 'utf-8');
-      const licenseData = JSON.parse(licenseRaw);
-      const expectedKey = licenseData.license_key;
-      setLicenseKeyExpected(expectedKey);
-
-      if (installKey === expectedKey) {
-        setInstallVerified(true);
-      }
-    } catch (error) {
-      console.error('❌ No se pudo leer license.json:', error);
-    }
-  }, []);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('car-care-users') || '[]');
-    const found = users.find((u: any) => u.cedula === cedula && u.password === password);
-
-    if (found) {
-      localStorage.setItem('car-care-active-user', JSON.stringify(found));
+      await hydrateCloudState();
       navigate('/');
-    } else {
-      setError('Cédula o contraseña incorrecta');
+    } catch {
+      setError('La sesión inició, pero no se pudieron descargar los datos.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!installVerified) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: '5rem' }}>
-        <h2>Activación requerida</h2>
-        <p>Esta instalación requiere una clave de activación proporcionada por el desarrollador.</p>
-        <input
-          type="text"
-          placeholder="Clave de instalación"
-          onChange={e => localStorage.setItem('car-care-install-key', e.target.value)}
-        />
-        <br />
-        <ThemedButton
-          onClick={() => {
-            const key = localStorage.getItem('car-care-install-key');
-            if (key === licenseKeyExpected) {
-              localStorage.setItem('car-care-install-key', key);
-              window.location.reload(); // fuerza refresco
-            } else {
-              alert('Clave incorrecta');
-            }
-          }}
-        >
-          Verificar
-        </ThemedButton>
-      </div>
-    );
-  }
-
-  if (showRegister) {
-    return <Register />;
-  }
+  if (showRegister) return <Register onBack={() => setShowRegister(false)} />;
 
   return (
     <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -89,14 +52,16 @@ const Login = () => {
         style={{ width: '120px', marginBottom: '1rem' }}
       />
       <h2>Bienvenido</h2>
+      <p>Ingresa con la misma cuenta en todos tus dispositivos.</p>
+
       <form onSubmit={handleLogin} style={{ maxWidth: '300px', margin: 'auto' }}>
         <input
-          type="text"
-          placeholder="Número identificación"
-          value={cedula}
-          onChange={e => setCedula(e.target.value)}
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
           required
-          style={{ width: '100%', padding: '10px', marginBottom: '10px',marginLeft: 'auto',marginRight: 'auto'}}
+          style={{ width: '100%', padding: 10, marginBottom: 10 }}
         />
         <input
           type="password"
@@ -104,36 +69,21 @@ const Login = () => {
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
-          style={{ width: '100%', padding: '10px', marginBottom: '10px',marginLeft: 'auto',marginRight: 'auto'}}
+          minLength={6}
+          style={{ width: '100%', padding: 10, marginBottom: 10 }}
         />
-
-        <ThemedButton type="submit" 
-                  style={{
-                    marginTop: '1rem',
-                    padding: '10px 24px',
-                    width: 'auto',
-                    minWidth: '160px',
-                    display: 'block',
-                    marginLeft: 'auto',
-                    marginRight: 'auto'
-                  }}>
-          
-          INGRESAR
+        <ThemedButton type="submit" disabled={loading} style={{ marginTop: '1rem', minWidth: 160 }}>
+          {loading ? 'INGRESANDO...' : 'INGRESAR'}
         </ThemedButton>
       </form>
 
-      {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+      {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
 
       <p style={{ marginTop: '1rem' }}>
-        <TextButton onClick={() => setShowRecovery(true)}>
-          ¿Olvidó su contraseña?
-        </TextButton>
+        <TextButton onClick={() => setShowRecovery(true)}>¿Olvidó su contraseña?</TextButton>
       </p>
-
       <p>
-        <TextButton onClick={() => setShowRegister(true)}>
-          Registrarse
-        </TextButton>
+        <TextButton onClick={() => setShowRegister(true)}>Crear cuenta</TextButton>
       </p>
 
       {showRecovery && <PasswordRecoveryModal onClose={() => setShowRecovery(false)} />}

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ThemedButton from '../components/ThemedButton';
+import { createMaintenance, MaintenanceRecord } from '../services/carCareData';
 
 const defaultOilTypes: { [key: string]: { km: number, mi: number } } = {
   '10W-30 Mineral': { km: 5000, mi: 3000 },
@@ -12,11 +13,13 @@ const defaultBrands: string[] = ['Castrol', 'Mobil', 'Valvoline'];
 const defaultViscosities: string[] = ['10W-30', '10W-40', '5W-30', '5W-40'];
 
 const OilChangeLogger = ({
+  vehicleId,
   plate,
   onOilChangeSaved
 }: {
+  vehicleId: string;
   plate: string;
-  onOilChangeSaved?: () => void;
+  onOilChangeSaved?: (maintenance: MaintenanceRecord) => void;
 }) => {
   const [mileage, setMileage] = useState('');
   const [notes, setNotes] = useState('');
@@ -25,6 +28,7 @@ const OilChangeLogger = ({
   const [viscosity, setViscosity] = useState('');
   const [unit, setUnit] = useState<'km' | 'mi'>('km');
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
   const [oilTypes, setOilTypes] = useState<{ [key: string]: { km: number; mi: number } }>({});
   const [oilBrands, setOilBrands] = useState<string[]>([]);
   const [oilViscosities, setOilViscosities] = useState<string[]>([]);
@@ -40,43 +44,55 @@ const OilChangeLogger = ({
     setOilViscosities(storedViscosities || defaultViscosities);
   }, []);
 
-  const handleSaveOilChange = () => {
-    if (!plate || !mileage || !oilType || !brand || !viscosity) {
+  const handleSaveOilChange = async () => {
+    if (!vehicleId || !plate || !mileage || !oilType || !brand || !viscosity) {
       setMessage('Faltan datos.');
       return;
     }
 
-    const km = Number(mileage);
-    const suggested = oilTypes[oilType]?.[unit] || 5000;
-    const nextChange = km + suggested;
+    setSaving(true);
+    setMessage('');
 
-    const allChanges = JSON.parse(localStorage.getItem('car-care-oil-changes') || '{}');
-    const entry = {
-      date: new Date().toISOString().split('T')[0],
-      mileage: km,
-      oilType,
-      brand,
-      viscosity,
-      unit,
-      mileageNextChange: nextChange,
-      notes
-    };
+    try {
+      const enteredMileage = Number(mileage);
+      const suggested = oilTypes[oilType]?.[unit] || 5000;
+      const nextChange = enteredMileage + suggested;
+      const mileageInKm = unit === 'mi'
+        ? Math.round(enteredMileage * 1.609344)
+        : enteredMileage;
 
-    if (!allChanges[plate]) allChanges[plate] = [];
-    allChanges[plate].push(entry);
+      const saved = await createMaintenance({
+        vehicleId,
+        maintenanceType: 'Cambio de aceite',
+        mileage: mileageInKm,
+        notes,
+        details: {
+          category: 'oil_change',
+          oil_type: oilType,
+          brand,
+          viscosity,
+          unit,
+          entered_mileage: enteredMileage,
+          next_change_mileage: nextChange,
+        },
+      });
 
-    localStorage.setItem('car-care-oil-changes', JSON.stringify(allChanges));
-    setMessage(`✅ Cambio guardado. Siguiente cambio a los ${nextChange} ${unit}.`);
-    setMileage('');
-    setNotes('');
-    setOilType('');
-    setBrand('');
-    setViscosity('');
+      setMessage(`✅ Cambio guardado. Siguiente cambio a los ${nextChange} ${unit}.`);
+      setMileage('');
+      setNotes('');
+      setOilType('');
+      setBrand('');
+      setViscosity('');
 
-    if (onOilChangeSaved) onOilChangeSaved();
+      onOilChangeSaved?.(saved);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'No se pudo guardar el cambio de aceite.');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const inputStyle = {
+  const inputStyle: React.CSSProperties = {
     padding: '10px',
     width: '100%',
     marginBottom: '10px',
@@ -95,6 +111,7 @@ const OilChangeLogger = ({
 
       <input
         type="number"
+        min="0"
         placeholder={`Kilometraje actual (${unit})`}
         value={mileage}
         onChange={e => setMileage(e.target.value)}
@@ -135,9 +152,15 @@ const OilChangeLogger = ({
         style={{ ...inputStyle, resize: 'vertical' }}
       />
 
-      <ThemedButton onClick={handleSaveOilChange}>Guardar Cambio</ThemedButton>
+      <ThemedButton onClick={handleSaveOilChange} disabled={saving}>
+        {saving ? 'Guardando...' : 'Guardar Cambio'}
+      </ThemedButton>
 
-      {message && <p style={{ marginTop: '10px', color: 'green' }}>{message}</p>}
+      {message && (
+        <p style={{ marginTop: '10px', color: message.startsWith('✅') ? 'green' : 'red' }}>
+          {message}
+        </p>
+      )}
     </div>
   );
 };

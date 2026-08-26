@@ -50,44 +50,37 @@ const SearchVehicles = () => {
     });
   }, [query, showInactive, vehicles]);
 
+  const activeCount = useMemo(() => vehicles.filter(vehicle => vehicle.is_active).length, [vehicles]);
+
   const goToVehicle = (vehicle: VehicleRecord) => {
     if (!vehicle.plate) return;
     navigate(`/vehicle/${encodeURIComponent(vehicle.plate)}`);
   };
 
-  const inputStyle: React.CSSProperties = {
-    padding: '12px',
-    width: '100%',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
-    fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
-  };
-
   return (
-    <div style={{ width: '100%', maxWidth: '900px', margin: '0 auto', padding: '1.5rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+    <section className="cc-page">
+      <div className="cc-page-header">
         <div>
-          <h2 style={{ marginBottom: '0.25rem' }}>Vehículos</h2>
-          <p style={{ marginTop: 0, color: '#666' }}>
-            Busca por placa, marca, modelo, apodo, VIN o generación.
+          <h1 className="cc-page-title">Vehículos</h1>
+          <p className="cc-page-subtitle">
+            {activeCount} activo{activeCount === 1 ? '' : 's'} · busca por placa, marca, modelo, VIN o apodo.
           </p>
         </div>
-        <ThemedButton onClick={() => navigate('/add-vehicle-guided')} style={{ width: 'auto' }}>
+        <ThemedButton onClick={() => navigate('/add-vehicle-guided')} style={{ width: 'auto', minWidth: '150px' }}>
           Agregar vehículo
         </ThemedButton>
       </div>
 
-      <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="cc-card-flat cc-search-toolbar">
         <input
           type="search"
           placeholder="Buscar vehículo..."
           value={query}
           onChange={e => setQuery(e.target.value)}
-          style={{ ...inputStyle, flex: '1 1 320px' }}
+          className="cc-input"
         />
 
-        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+        <label className="cc-toggle">
           <input
             type="checkbox"
             checked={showInactive}
@@ -97,59 +90,59 @@ const SearchVehicles = () => {
         </label>
       </div>
 
-      {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+      {error && (
+        <div className="cc-card-flat" style={{ padding: '14px 16px', color: '#b43b3b', marginBottom: '16px' }}>
+          {error}
+        </div>
+      )}
 
       {loading ? (
-        <p style={{ marginTop: '2rem', textAlign: 'center' }}>Cargando vehículos...</p>
+        <div className="cc-card-flat cc-empty">Cargando vehículos...</div>
       ) : filteredVehicles.length === 0 ? (
-        <div style={{ marginTop: '2rem', textAlign: 'center', padding: '2rem', border: '1px dashed #ccc', borderRadius: '10px' }}>
-          <p>{query ? 'No hay coincidencias.' : 'Todavía no hay vehículos registrados.'}</p>
+        <div className="cc-card-flat cc-empty">
+          <p>{query ? 'No hay coincidencias con esa búsqueda.' : 'Todavía no hay vehículos registrados.'}</p>
           {!query && (
-            <ThemedButton onClick={() => navigate('/add-vehicle-guided')} style={{ width: 'auto' }}>
+            <ThemedButton onClick={() => navigate('/add-vehicle-guided')} style={{ width: 'auto', margin: '14px auto 0' }}>
               Registrar el primero
             </ThemedButton>
           )}
         </div>
       ) : (
-        <div style={{ marginTop: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+        <div className="cc-vehicle-grid">
           {filteredVehicles.map(vehicle => (
             <article
               key={vehicle.id}
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: '10px',
-                padding: '1rem',
-                backgroundColor: vehicle.is_active ? '#fff' : '#f5f5f5',
-                opacity: vehicle.is_active ? 1 : 0.78,
-              }}
+              className={`cc-card-flat cc-vehicle-card${vehicle.is_active ? '' : ' inactive'}`}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'flex-start' }}>
+              <div className="cc-vehicle-head">
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>{vehicle.plate || 'Sin placa'}</strong>
-                  {vehicle.nickname && <div style={{ color: '#666', marginTop: '2px' }}>{vehicle.nickname}</div>}
+                  <div className="cc-plate">{vehicle.plate || 'Sin placa'}</div>
+                  {vehicle.nickname && <div className="cc-muted" style={{ marginTop: '3px' }}>{vehicle.nickname}</div>}
                 </div>
-                <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>
-                  {vehicle.is_active ? 'ACTIVO' : 'DESACTIVADO'}
+                <span className={`cc-status ${vehicle.is_active ? 'active' : 'inactive'}`}>
+                  {vehicle.is_active ? 'Activo' : 'Desactivado'}
                 </span>
               </div>
 
-              <p style={{ marginBottom: '0.35rem' }}>
-                {vehicle.make} {vehicle.model}
-                {vehicle.year ? ` · ${vehicle.year}` : ''}
-              </p>
-              {vehicle.generation && <p style={{ margin: '0.35rem 0', color: '#666' }}>{vehicle.generation}</p>}
-              <p style={{ margin: '0.35rem 0' }}>
-                <strong>{vehicle.current_mileage.toLocaleString()}</strong> km
-              </p>
+              <div className="cc-vehicle-meta">
+                <strong style={{ color: '#17212b' }}>
+                  {vehicle.make} {vehicle.model}
+                  {vehicle.year ? ` · ${vehicle.year}` : ''}
+                </strong>
+                {vehicle.generation && <span>{vehicle.generation}</span>}
+                <span>{vehicle.current_mileage.toLocaleString()} km</span>
+              </div>
 
-              <ThemedButton onClick={() => goToVehicle(vehicle)} style={{ marginTop: '0.75rem', width: '100%' }}>
-                Ver historial
-              </ThemedButton>
+              <div style={{ marginTop: 'auto' }}>
+                <ThemedButton onClick={() => goToVehicle(vehicle)} style={{ width: '100%' }}>
+                  Abrir vehículo
+                </ThemedButton>
+              </div>
             </article>
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

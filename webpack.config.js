@@ -20,7 +20,7 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'], // Tailwind
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
@@ -33,7 +33,8 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    clean: true, // limpia el directorio de salida
+    publicPath: '/',
+    clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -42,18 +43,22 @@ module.exports = {
     new webpack.ProvidePlugin({
       global: require.resolve('global'),
     }),
+    new webpack.DefinePlugin({
+      __SUPABASE_URL__: JSON.stringify(process.env.CAR_CARE_SUPABASE_URL || ''),
+      __SUPABASE_PUBLISHABLE_KEY__: JSON.stringify(process.env.CAR_CARE_SUPABASE_PUBLISHABLE_KEY || ''),
+    }),
     new CopyPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, 'public'),
           to: path.resolve(__dirname, 'dist'),
           globOptions: {
-            ignore: ['**/index.html'], // ⚠️ evita conflicto con HtmlWebpackPlugin
+            ignore: ['**/index.html'],
           },
         },
       ],
     }),
   ],
-  mode: 'development',
-  target: 'electron-renderer',
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  target: 'web',
 };

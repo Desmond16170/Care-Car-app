@@ -1,7 +1,7 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ThemedButton from '../components/ThemedButton';
+import { createVehicle, normalizePlate } from '../services/carCareData';
 
 interface Marca {
   nombre: string;
@@ -26,6 +26,7 @@ const GuidedAddVehicle = () => {
   const [kilometraje, setKilometraje] = useState('');
   const [placa, setPlaca] = useState('');
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,34 +77,30 @@ const GuidedAddVehicle = () => {
     }
   };
 
-  const handleSaveVehicle = () => {
-    const activeUser = JSON.parse(localStorage.getItem('car-care-active-user') || 'null');
-    if (!activeUser || !selectedMarca || !selectedModelo || !selectedGeneracion || !placa) {
+  const handleSaveVehicle = async () => {
+    if (!selectedMarca || !selectedModelo || !selectedGeneracion || !normalizePlate(placa)) {
       setMessage('Por favor completa todos los campos.');
       return;
     }
 
-    const vehicle = {
-      make: selectedMarca,
-      model: selectedModelo,
-      year: selectedGeneracion,
-      mileage: kilometraje,
-      plate: placa,
-      registeredBy: activeUser.name,
-    };
+    setSaving(true);
+    setMessage('');
 
-    const allVehicles = JSON.parse(localStorage.getItem('car-care-vehicles') || '{}');
-    const userVehicles = allVehicles[activeUser.name] || [];
+    try {
+      const vehicle = await createVehicle({
+        make: selectedMarca,
+        model: selectedModelo,
+        generation: selectedGeneracion,
+        currentMileage: Number(kilometraje || 0),
+        plate: placa,
+      });
 
-    if (userVehicles.some((v: any) => v.plate === placa)) {
-      setMessage('Ya existe un vehículo con esa placa.');
-      return;
+      navigate(`/vehicle/${encodeURIComponent(vehicle.plate || normalizePlate(placa))}`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'No se pudo guardar el vehículo.');
+    } finally {
+      setSaving(false);
     }
-
-    userVehicles.push(vehicle);
-    allVehicles[activeUser.name] = userVehicles;
-    localStorage.setItem('car-care-vehicles', JSON.stringify(allVehicles));
-    navigate(`/vehicle/${placa}`);
   };
 
   return (
@@ -136,26 +133,25 @@ const GuidedAddVehicle = () => {
             ))}
           </div>
           <ThemedButton
-  onClick={() => navigate('/add-vehicle')}
-  style={{
-    border: '2px dashed gray',
-    borderRadius: '8px',
-    padding: '10px',
-    width: '100px',
-    height: '100px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f9f9f9',
-    color: '#555',
-    fontSize: '12px',
-  }}
->
-  <span style={{ fontSize: '24px', marginBottom: '5px' }}>＋</span>
-  otro
-</ThemedButton>
-
+            onClick={() => navigate('/add-vehicle')}
+            style={{
+              border: '2px dashed gray',
+              borderRadius: '8px',
+              padding: '10px',
+              width: '100px',
+              height: '100px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#f9f9f9',
+              color: '#555',
+              fontSize: '12px',
+            }}
+          >
+            <span style={{ fontSize: '24px', marginBottom: '5px' }}>＋</span>
+            otro
+          </ThemedButton>
         </>
       )}
 
@@ -166,16 +162,16 @@ const GuidedAddVehicle = () => {
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
             {modelos.map(modelo => (
               <ThemedButton
-  key={modelo.nombre}
-  onClick={() => handleSelectModelo(modelo.nombre)}
-  style={{
-    maxWidth: '300px',  // límite de ancho
-    width: '90%',        // ancho relativo adaptable
-    margin: '0 auto'     // centrar horizontalmente
-  }}
->
-  {modelo.nombre}
-</ThemedButton>
+                key={modelo.nombre}
+                onClick={() => handleSelectModelo(modelo.nombre)}
+                style={{
+                  maxWidth: '300px',
+                  width: '90%',
+                  margin: '0 auto'
+                }}
+              >
+                {modelo.nombre}
+              </ThemedButton>
             ))}
           </div>
         </>
@@ -190,53 +186,56 @@ const GuidedAddVehicle = () => {
               <option key={idx} value={gen}>{gen}</option>
             ))}
           </select>
+
           <input
-  type="text"
-  placeholder="Placa"
-  value={placa}
-  onChange={(e) => setPlaca(e.target.value)}
-  style={{
-    padding: '10px',
-    width: '90%',
-    maxWidth: '300px',
-    display: 'block',
-    margin: '10px auto',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
-    fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
-  }}
-/>
+            type="text"
+            placeholder="Placa"
+            value={placa}
+            onChange={(e) => setPlaca(e.target.value)}
+            style={{
+              padding: '10px',
+              width: '90%',
+              maxWidth: '300px',
+              display: 'block',
+              margin: '10px auto',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
+              fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
+            }}
+          />
 
-<input
-  type="number"
-  placeholder="Kilometraje"
-  value={kilometraje}
-  onChange={(e) => setKilometraje(e.target.value)}
-  style={{
-    padding: '10px',
-    width: '90%',
-    maxWidth: '300px',
-    display: 'block',
-    margin: '10px auto',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
-    fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
-  }}
-/>
+          <input
+            type="number"
+            placeholder="Kilometraje"
+            min="0"
+            value={kilometraje}
+            onChange={(e) => setKilometraje(e.target.value)}
+            style={{
+              padding: '10px',
+              width: '90%',
+              maxWidth: '300px',
+              display: 'block',
+              margin: '10px auto',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
+              fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
+            }}
+          />
 
-<ThemedButton
-  onClick={handleSaveVehicle}
-  style={{
-    maxWidth: '300px',
-    width: '90%',
-    margin: '1rem auto 0 auto',
-    display: 'block'
-  }}
->
-  Guardar Vehículo
-</ThemedButton>
+          <ThemedButton
+            onClick={handleSaveVehicle}
+            disabled={saving}
+            style={{
+              maxWidth: '300px',
+              width: '90%',
+              margin: '1rem auto 0 auto',
+              display: 'block'
+            }}
+          >
+            {saving ? 'Guardando...' : 'Guardar Vehículo'}
+          </ThemedButton>
           {message && <p style={{ color: 'red', marginTop: '10px' }}>{message}</p>}
         </>
       )}

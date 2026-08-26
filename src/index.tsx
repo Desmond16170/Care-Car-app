@@ -11,6 +11,7 @@ import './auth-settings.css';
 import './tramado.css';
 import './recepciones.css';
 import './customers-modules.css';
+import './pwa-mobile.css';
 import './modern-ui-overrides.css';
 
 const bg = localStorage.getItem('car-care-background-color');
@@ -35,6 +36,14 @@ window.onafterprint = () => {
   const printArea = document.getElementById('print-area');
   if (printArea) printArea.style.display = 'none';
 };
+
+if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(error => {
+      console.warn('No se pudo registrar el service worker de Care Car.', error);
+    });
+  });
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(

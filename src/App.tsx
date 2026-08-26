@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -11,20 +11,20 @@ import VehicleDetails from './pages/VehicleDetails';
 import Dashboard from './pages/Dashboard';
 import Tramado from './pages/Tramado';
 import Recepciones from './pages/Recepciones';
+import Customers from './pages/Customers';
+import CustomerDetails from './pages/CustomerDetails';
 import Settings from './pages/Settings';
 import ProtectedInstall from './components/ProtectedInstall';
 import InitialSetup from './pages/InitialSetup';
 import GuideAddVehicle from './pages/GuideAddVehicle';
+import { getModuleConfig, ModuleConfig, ModuleKey } from './lib/modules';
 
-const coreNavItems = [
-  { to: '/1', label: 'Inicio' },
-  { to: '/dashboard', label: 'Resumen' },
-  { to: '/search', label: 'Vehículos' },
-  { to: '/tramado', label: 'Tramado' },
-  { to: '/add-vehicle-guided', label: 'Agregar' },
-];
+const ModuleGuard: React.FC<{ module: ModuleKey; modules: ModuleConfig; children: React.ReactElement }> = ({ module, modules, children }) => {
+  if (!modules[module]) return <Navigate to="/1" replace />;
+  return children;
+};
 
-const AppRoutes = () => (
+const AppRoutes: React.FC<{ modules: ModuleConfig }> = ({ modules }) => (
   <Routes>
     <Route path="/" element={<Navigate to="/1" replace />} />
     <Route path="/1" element={<Home />} />
@@ -33,10 +33,12 @@ const AppRoutes = () => (
     <Route path="/forgot-password" element={<ForgotPassword />} />
     <Route path="/reset-password" element={<ResetPassword />} />
     <Route path="/setup" element={<InitialSetup />} />
-    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/dashboard" element={<ModuleGuard module="dashboard" modules={modules}><Dashboard /></ModuleGuard>} />
     <Route path="/search" element={<SearchVehicles />} />
-    <Route path="/tramado" element={<Tramado />} />
-    <Route path="/recepciones" element={<Recepciones />} />
+    <Route path="/tramado" element={<ModuleGuard module="tramado" modules={modules}><Tramado /></ModuleGuard>} />
+    <Route path="/recepciones" element={<ModuleGuard module="tramado" modules={modules}><Recepciones /></ModuleGuard>} />
+    <Route path="/customers" element={<ModuleGuard module="customers" modules={modules}><Customers /></ModuleGuard>} />
+    <Route path="/customers/:id" element={<ModuleGuard module="customers" modules={modules}><CustomerDetails /></ModuleGuard>} />
     <Route path="/settings" element={<Settings />} />
     <Route path="/add-vehicle" element={<AddVehicle />} />
     <Route path="/add-vehicle-guided" element={<GuideAddVehicle />} />
@@ -47,12 +49,35 @@ const AppRoutes = () => (
 
 const App = () => {
   const location = useLocation();
+  const [modules, setModules] = useState<ModuleConfig>(getModuleConfig());
   const tallerName = localStorage.getItem('car-care-taller-name') || 'Care Car';
   const logo = localStorage.getItem('car-care-logo');
   const isAuthView = ['/login', '/register', '/forgot-password', '/reset-password', '/setup'].includes(location.pathname);
 
+  useEffect(() => {
+    const refresh = () => setModules(getModuleConfig());
+    window.addEventListener('car-care-modules-changed', refresh as EventListener);
+    window.addEventListener('storage', refresh);
+    return () => {
+      window.removeEventListener('car-care-modules-changed', refresh as EventListener);
+      window.removeEventListener('storage', refresh);
+    };
+  }, []);
+
+  const coreNavItems = useMemo(() => {
+    const items = [
+      { to: '/1', label: 'Inicio', enabled: true },
+      { to: '/dashboard', label: 'Resumen', enabled: modules.dashboard },
+      { to: '/search', label: 'Vehículos', enabled: true },
+      { to: '/customers', label: 'Clientes', enabled: modules.customers },
+      { to: '/tramado', label: 'Tramado', enabled: modules.tramado },
+      { to: '/add-vehicle-guided', label: 'Agregar', enabled: true },
+    ];
+    return items.filter(item => item.enabled);
+  }, [modules]);
+
   if (isAuthView) {
-    return <ProtectedInstall><div className="cc-auth-root"><AppRoutes /></div></ProtectedInstall>;
+    return <ProtectedInstall><div className="cc-auth-root"><AppRoutes modules={modules} /></div></ProtectedInstall>;
   }
 
   return (
@@ -67,7 +92,7 @@ const App = () => {
 
             <nav className="cc-desktop-nav" aria-label="Navegación principal">
               {coreNavItems.map(item => <NavLink key={item.to} to={item.to} className={({ isActive }) => `cc-nav-link${isActive ? ' active' : ''}`}>{item.label}</NavLink>)}
-              <NavLink to="/recepciones" className={({ isActive }) => `cc-nav-link${isActive ? ' active' : ''}`}>Recepciones</NavLink>
+              {modules.tramado && <NavLink to="/recepciones" className={({ isActive }) => `cc-nav-link${isActive ? ' active' : ''}`}>Recepciones</NavLink>}
               <NavLink to="/settings" className={({ isActive }) => `cc-nav-link${isActive ? ' active' : ''}`}>Configuración</NavLink>
             </nav>
 
@@ -75,10 +100,10 @@ const App = () => {
           </div>
         </header>
 
-        <main className="cc-main"><AppRoutes /></main>
+        <main className="cc-main"><AppRoutes modules={modules} /></main>
 
         <nav className="cc-bottom-nav" aria-label="Navegación móvil">
-          {coreNavItems.map(item => <NavLink key={item.to} to={item.to} className={({ isActive }) => `cc-bottom-link${isActive ? ' active' : ''}`}>{item.label}</NavLink>)}
+          {coreNavItems.slice(0, 5).map(item => <NavLink key={item.to} to={item.to} className={({ isActive }) => `cc-bottom-link${isActive ? ' active' : ''}`}>{item.label}</NavLink>)}
         </nav>
       </div>
     </ProtectedInstall>

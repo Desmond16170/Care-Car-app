@@ -42,66 +42,54 @@ const Login = () => {
   }
 
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <img
-        src={localStorage.getItem('car-care-logo') || '/logo-taller.png'}
-        alt="Logo Care Car"
-        style={{ width: '120px', marginBottom: '1rem' }}
-      />
-      <h2>Bienvenido</h2>
-      <p>Inicia sesión para sincronizar tus vehículos entre dispositivos.</p>
+    <section className="cc-auth-page">
+      <div className="cc-auth-card">
+        <div className="cc-auth-brand">
+          <div className="cc-auth-logo">
+            <img src={localStorage.getItem('car-care-logo') || '/logo-taller.png'} alt="Care Car" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+            <span>CC</span>
+          </div>
+          <div>
+            <div className="cc-hero-kicker">Care Car 2.0</div>
+            <h1>Bienvenido</h1>
+            <p>Entra al taller y continúa donde lo dejaste desde cualquier dispositivo.</p>
+          </div>
+        </div>
 
-      {!isSupabaseConfigured && (
-        <p style={{ color: '#b45309', fontWeight: 600 }}>
-          Modo de prueba: falta configurar la conexión con Supabase.
-        </p>
-      )}
+        {!isSupabaseConfigured && (
+          <div className="cc-alert cc-alert-info">Modo de prueba: falta configurar la conexión con Supabase.</div>
+        )}
 
-      <form onSubmit={handleLogin} style={{ maxWidth: '320px', margin: 'auto' }}>
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          autoComplete="email"
-          required
-          style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="current-password"
-          required
-          style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
-        />
+        <form onSubmit={handleLogin} className="cc-auth-form">
+          <label className="cc-field">
+            <span>Correo electrónico</span>
+            <input className="cc-input" type="email" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" placeholder="nombre@correo.com" required />
+          </label>
+          <label className="cc-field">
+            <span>Contraseña</span>
+            <input className="cc-input" type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="current-password" placeholder="Tu contraseña" required />
+          </label>
 
-        <ThemedButton
-          type="submit"
-          disabled={loading}
-          style={{
-            marginTop: '1rem',
-            padding: '10px 24px',
-            width: 'auto',
-            minWidth: '160px',
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-        >
-          {loading ? 'INGRESANDO...' : 'INGRESAR'}
-        </ThemedButton>
-      </form>
+          <div className="cc-auth-helper-row">
+            <span />
+            <TextButton onClick={() => navigate('/forgot-password')}>¿Olvidaste tu contraseña?</TextButton>
+          </div>
 
-      {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+          {error && <div className="cc-alert cc-alert-danger">{error}</div>}
 
-      <p style={{ marginTop: '1rem' }}>
-        <TextButton onClick={() => setShowRegister(true)}>
-          Crear cuenta
-        </TextButton>
-      </p>
-    </div>
+          <ThemedButton type="submit" disabled={loading}>
+            {loading ? 'Ingresando...' : 'Iniciar sesión'}
+          </ThemedButton>
+        </form>
+
+        <div className="cc-auth-divider"><span>o</span></div>
+
+        <div className="cc-auth-secondary">
+          <span>¿Es la primera vez que usas Care Car?</span>
+          <TextButton onClick={() => setShowRegister(true)}>Crear una cuenta</TextButton>
+        </div>
+      </div>
+    </section>
   );
 };
 

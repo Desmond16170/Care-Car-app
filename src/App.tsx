@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import AddVehicle from './pages/AddVehicle';
 import SearchVehicles from './pages/SearchVehicles';
 import VehicleDetails from './pages/VehicleDetails';
+import Dashboard from './pages/Dashboard';
 import ProtectedInstall from './components/ProtectedInstall';
 import InitialSetup from './pages/InitialSetup';
 import GuideAddVehicle from './pages/GuideAddVehicle';
@@ -26,6 +27,7 @@ const App = () => {
         <nav style={{ padding: '1rem', backgroundColor: '#f0f0f0', marginBottom: '1rem' }}>
           <ul style={{ display: 'flex', gap: '20px', listStyle: 'none', padding: 0, margin: 0, flexWrap: 'wrap' }}>
             <li><Link to="/1">Inicio</Link></li>
+            <li><Link to="/dashboard">Resumen</Link></li>
             <li><Link to="/search">Buscar Vehículo</Link></li>
             <li><Link to="/add-vehicle-guided">Agregar Vehículo</Link></li>
           </ul>
@@ -36,6 +38,7 @@ const App = () => {
           <Route path="/1" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/setup" element={<InitialSetup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/search" element={<SearchVehicles />} />
           <Route path="/add-vehicle" element={<AddVehicle />} />
           <Route path="/add-vehicle-guided" element={<GuideAddVehicle />} />

@@ -12,6 +12,8 @@ export interface VehicleRecord {
   vin: string | null;
   current_mileage: number;
   nickname: string | null;
+  is_active: boolean;
+  archived_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -45,6 +47,16 @@ export interface CreateVehicleInput {
   year?: number | null;
   generation?: string | null;
   currentMileage?: number;
+  vin?: string | null;
+  nickname?: string | null;
+}
+
+export interface UpdateVehicleInput {
+  make: string;
+  model: string;
+  plate: string;
+  year?: number | null;
+  generation?: string | null;
   vin?: string | null;
   nickname?: string | null;
 }
@@ -137,13 +149,15 @@ export const createVehicle = async (input: CreateVehicleInput): Promise<VehicleR
       vin: input.vin?.trim() || null,
       current_mileage: currentMileage,
       nickname: input.nickname?.trim() || null,
+      is_active: true,
+      archived_at: null,
     })
     .select('*')
     .single();
 
   if (error) {
     if (error.code === '23505') {
-      throw new Error('Ya existe un vehículo con esa placa en tu cuenta.');
+      throw new Error('Ya existe un vehículo activo con esa placa en tu cuenta.');
     }
     throw error;
   }
@@ -165,15 +179,22 @@ export const createVehicle = async (input: CreateVehicleInput): Promise<VehicleR
   return vehicle;
 };
 
-export const listVehicles = async (): Promise<VehicleRecord[]> => {
+export const listVehicles = async (includeInactive = false): Promise<VehicleRecord[]> => {
   const client = getClient();
   const user = await getCurrentUser();
 
-  const { data, error } = await client
+  let query = client
     .from('vehicles')
     .select('*')
     .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+    .order('is_active', { ascending: false })
+    .order('updated_at', { ascending: false });
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true);
+  }
+
+  const { data, error } = await query;
 
   if (error) throw error;
   return (data ?? []) as VehicleRecord[];
@@ -191,10 +212,80 @@ export const findVehicleByPlate = async (plateInput: string): Promise<VehicleRec
     .select('*')
     .eq('user_id', user.id)
     .eq('plate', plate)
+    .order('is_active', { ascending: false })
+    .order('updated_at', { ascending: false })
+    .limit(1)
     .maybeSingle();
 
   if (error) throw error;
   return (data as VehicleRecord | null) ?? null;
+};
+
+export const updateVehicle = async (
+  vehicleId: string,
+  input: UpdateVehicleInput
+): Promise<VehicleRecord> => {
+  const client = getClient();
+  const user = await getCurrentUser();
+  const plate = normalizePlate(input.plate);
+
+  if (!plate) throw new Error('La placa es obligatoria.');
+  if (!input.make.trim() || !input.model.trim()) {
+    throw new Error('Marca y modelo son obligatorios.');
+  }
+
+  const { data, error } = await client
+    .from('vehicles')
+    .update({
+      make: input.make.trim(),
+      model: input.model.trim(),
+      year: input.year ?? null,
+      generation: input.generation?.trim() || null,
+      plate,
+      vin: input.vin?.trim() || null,
+      nickname: input.nickname?.trim() || null,
+    })
+    .eq('id', vehicleId)
+    .eq('user_id', user.id)
+    .select('*')
+    .single();
+
+  if (error) {
+    if (error.code === '23505') {
+      throw new Error('Ya existe otro vehículo activo con esa placa.');
+    }
+    throw error;
+  }
+
+  return data as VehicleRecord;
+};
+
+export const setVehicleActive = async (
+  vehicleId: string,
+  isActive: boolean
+): Promise<VehicleRecord> => {
+  const client = getClient();
+  const user = await getCurrentUser();
+
+  const { data, error } = await client
+    .from('vehicles')
+    .update({
+      is_active: isActive,
+      archived_at: isActive ? null : new Date().toISOString(),
+    })
+    .eq('id', vehicleId)
+    .eq('user_id', user.id)
+    .select('*')
+    .single();
+
+  if (error) {
+    if (error.code === '23505' && isActive) {
+      throw new Error('No se puede restaurar porque ya existe un vehículo activo con esa placa.');
+    }
+    throw error;
+  }
+
+  return data as VehicleRecord;
 };
 
 export const listMaintenances = async (vehicleId: string): Promise<MaintenanceRecord[]> => {
@@ -232,6 +323,17 @@ export const createMaintenance = async (
   const user = await getCurrentUser();
   const performedBy = await getCurrentDisplayName(user);
   const mileage = input.mileage == null ? null : Math.max(0, input.mileage);
+
+  const { data: vehicle, error: vehicleError } = await client
+    .from('vehicles')
+    .select('is_active')
+    .eq('id', input.vehicleId)
+    .maybeSingle();
+
+  if (vehicleError) throw vehicleError;
+  if (!vehicle?.is_active) {
+    throw new Error('Este vehículo está desactivado. Restáuralo antes de agregar mantenimientos.');
+  }
 
   const { data, error } = await client
     .from('maintenances')
@@ -293,6 +395,17 @@ export const recordMileage = async (
   const client = getClient();
   await getCurrentUser();
   const safeMileage = Math.max(0, mileage);
+
+  const { data: vehicle, error: vehicleError } = await client
+    .from('vehicles')
+    .select('is_active')
+    .eq('id', vehicleId)
+    .maybeSingle();
+
+  if (vehicleError) throw vehicleError;
+  if (!vehicle?.is_active) {
+    throw new Error('Este vehículo está desactivado. Restáuralo antes de actualizar el kilometraje.');
+  }
 
   const { data, error } = await client
     .from('mileage_logs')

@@ -6,6 +6,7 @@ interface ThemedButtonProps {
   type?: 'button' | 'submit' | 'reset';
   className?: string;
   style?: React.CSSProperties;
+  disabled?: boolean;
 }
 
 const ThemedButton: React.FC<ThemedButtonProps> = ({
@@ -14,6 +15,7 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   type = 'button',
   className = '',
   style = {},
+  disabled = false,
 }) => {
   const primaryColor = localStorage.getItem('car-care-primary-color') || '#FFA500';
   const textColor = localStorage.getItem('car-care-text-color') || '#FFFFFF';
@@ -27,14 +29,15 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
     border: 'none',
     borderRadius: '8px',
     fontWeight: 'bold',
-    cursor: 'pointer',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.65 : 1,
     transition: 'background-color 0.2s ease',
     width: '100%',
-    ...style, // permite override si se desea
+    ...style,
   };
 
   return (
-    <button type={type} onClick={onClick} className={className} style={combinedStyle}>
+    <button type={type} onClick={onClick} className={className} style={combinedStyle} disabled={disabled}>
       {children}
     </button>
   );

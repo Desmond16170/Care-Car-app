@@ -1,152 +1,68 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ThemedButton from '../components/ThemedButton';
 import PasswordInput from '../components/PasswordInput';
+import { supabase } from '../services/supabaseClient';
 
-const Register = () => {
-  const [cedula, setCedula] = useState('');
+const Register = ({ onBack }: { onBack?: () => void }) => {
+  const [identification, setIdentification] = useState('');
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [managerKeyInput, setManagerKeyInput] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage('');
 
-    const storedKey = localStorage.getItem('car-care-manager-key');
-    if (storedKey !== managerKeyInput) {
-      setMessage('Clave del gerente incorrecta');
-      return;
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: { full_name: name.trim(), identification: identification.trim() },
+      },
+    });
+
+    if (error) {
+      setMessage(error.message.includes('already') ? 'Este correo ya está registrado.' : error.message);
+    } else if (!data.session) {
+      setMessage('Cuenta creada. Revisa tu correo para confirmarla antes de ingresar.');
+    } else {
+      setMessage('Cuenta creada correctamente. Ya puedes ingresar.');
     }
-
-    const newUser = { cedula, name, password };
-    const users = JSON.parse(localStorage.getItem('car-care-users') || '[]');
-
-    if (users.find((u: any) => u.cedula === cedula)) {
-      setMessage('Ya existe un usuario con esta cédula');
-      return;
-    }
-
-    users.push(newUser);
-    localStorage.setItem('car-care-users', JSON.stringify(users));
-
-    setMessage('¡Usuario registrado exitosamente!');
-    setCedula('');
-    setName('');
-    setPassword('');
-    setManagerKeyInput('');
+    setLoading(false);
   };
 
-  const maintenances = JSON.parse(localStorage.getItem('car-care-maintenance') || '[]');
-
   const inputStyle: React.CSSProperties = {
-    padding: '10px',
+    padding: 10,
     width: '100%',
     border: '1px solid #ccc',
-    borderRadius: '4px',
-    marginBottom: '10px',
-    outlineColor: localStorage.getItem('car-care-primary-color') || '#FFA500',
-    fontFamily: localStorage.getItem('car-care-font-family') || 'Arial'
+    borderRadius: 4,
+    marginBottom: 10,
   };
 
   return (
     <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <h2>Registro de Usuario</h2>
-      <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: 'auto' }}>
-        <input
-          type="text"
-          placeholder="Número de identificación"
-          value={cedula}
-          onChange={(e) => setCedula(e.target.value)}
-          required
-          style={inputStyle}
-        />
-        <input
-          type="text"
-          placeholder="Nombre completo"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          style={inputStyle}
-        />
-        <PasswordInput
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          style={inputStyle}
-        />
-        <PasswordInput
-          placeholder="Clave del gerente"
-          value={managerKeyInput}
-          onChange={e => setManagerKeyInput(e.target.value)}
-          style={inputStyle}
-        />
-        <ThemedButton
-          type="submit"
-          style={{
-            marginTop: '1rem',
-            padding: '10px 24px',
-            width: 'auto',
-            minWidth: '160px',
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto'
-          }}
-        >
-          Registrar
+      <h2>Crear cuenta</h2>
+      <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: 'auto' }}>
+        <input type="text" placeholder="Número de identificación" value={identification}
+          onChange={e => setIdentification(e.target.value)} required style={inputStyle} />
+        <input type="text" placeholder="Nombre completo" value={name}
+          onChange={e => setName(e.target.value)} required style={inputStyle} />
+        <input type="email" placeholder="Correo electrónico" value={email}
+          onChange={e => setEmail(e.target.value)} required style={inputStyle} />
+        <PasswordInput placeholder="Contraseña (mínimo 6 caracteres)" value={password}
+          onChange={e => setPassword(e.target.value)} style={inputStyle} />
+        <ThemedButton type="submit" disabled={loading} style={{ marginTop: '1rem', minWidth: 160 }}>
+          {loading ? 'CREANDO...' : 'CREAR CUENTA'}
         </ThemedButton>
       </form>
 
-      {message && (
-        <p style={{ marginTop: '10px', fontWeight: 'bold', color: message.includes('exitosamente') ? 'green' : 'red' }}>
-          {message}
-        </p>
-      )}
-
-      <ThemedButton
-        onClick={() => navigate('/')}
-        style={{
-          marginTop: '1rem',
-          padding: '10px 24px',
-          width: 'auto',
-          minWidth: '160px',
-          display: 'block',
-          marginLeft: 'auto',
-          marginRight: 'auto'
-        }}
-      >
+      {message && <p style={{ marginTop: 10, fontWeight: 'bold' }}>{message}</p>}
+      <ThemedButton onClick={onBack || (() => history.back())} style={{ marginTop: '1rem', minWidth: 160 }}>
         Volver
       </ThemedButton>
-
-      <div id="print-area" style={{ display: 'none' }}>
-        <h2>Historial de Mantenimientos</h2>
-        <table style={{ width: '100%', marginTop: '1rem', borderCollapse: 'collapse', border: '1px solid black' }}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Tipo</th>
-              <th>Fecha</th>
-              <th>Kilometraje</th>
-              <th>Notas</th>
-              <th>Registrado por</th>
-            </tr>
-          </thead>
-          <tbody>
-            {maintenances.map((m: any, index: number) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{m.tipo}</td>
-                <td>{m.fecha}</td>
-                <td>{m.kilometraje}</td>
-                <td>{m.notas}</td>
-                <td>{m.usuario}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 };

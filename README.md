@@ -2,6 +2,8 @@
 
 [![Build web and Windows](https://github.com/Desmond16170/Care-Car-app/actions/workflows/build.yml/badge.svg)](https://github.com/Desmond16170/Care-Car-app/actions/workflows/build.yml)
 
+Estado actual: **Care Car 2.0**, con Supabase, PWA, recepción de taller y módulo de tramado.
+
 **Car Care App** es una aplicación multiplataforma para Android y PC, diseñada para ayudar a usuarios y talleres a registrar vehículos, controlar mantenimientos y sincronizar datos en tiempo real.
 
 Permite seleccionar vehículos por marca, modelo y generación mediante botones visuales con logos, y guarda el perfil del auto junto con su kilometraje y matrícula. Además, registra mantenimientos realizados y los organiza de manera clara, incluyendo gráficos y estadísticas.

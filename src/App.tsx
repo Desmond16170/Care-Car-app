@@ -8,6 +8,8 @@ import VehicleDetails from './pages/VehicleDetails';
 import ProtectedInstall from './components/ProtectedInstall';
 import InitialSetup from './pages/InitialSetup';
 import GuideAddVehicle from './pages/GuideAddVehicle';
+import Settings from './pages/Settings';
+import Dashboard from './pages/Dashboard';
 
 const App = () => {
   const isConfigured = localStorage.getItem('car-care-configured') === 'true';
@@ -29,7 +31,9 @@ const App = () => {
           <ul style={{ display: 'flex', gap: '20px', listStyle: 'none', padding: 0, margin: 0 }}>
             <li><Link to="/1">Inicio</Link></li>
             <li><Link to="/search">Buscar Vehículo</Link></li>
-            <li><Link to="/add-vehicle-guided">Agregar Vehículo </Link></li>
+            <li><Link to="/add-vehicle-guided">Agregar Vehículo</Link></li>
+            <li><Link to="/resumen">Resumen</Link></li>
+            <li><Link to="/settings">Configuración</Link></li>
 
           </ul>
         </nav>
@@ -42,6 +46,8 @@ const App = () => {
           <Route path="/add-vehicle" element={<AddVehicle />} />
           <Route path="/add-vehicle-guided" element={<GuideAddVehicle />} />
           <Route path="/vehicle/:plate" element={<VehicleDetails />} />
+          <Route path="/resumen" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
 
         </Routes>
       </div>

@@ -4,6 +4,7 @@ import PasswordInput from '../components/PasswordInput';
 import { supabase } from '../services/supabaseClient';
 
 const Register = ({ onBack }: { onBack?: () => void }) => {
+  const isElectron = typeof window !== 'undefined' && typeof (window as any).require === 'function';
   const [identification, setIdentification] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,9 +43,19 @@ const Register = ({ onBack }: { onBack?: () => void }) => {
     marginBottom: 10,
   };
 
+  if (!isElectron) {
+    return (
+      <div style={{ textAlign: 'center', padding: '2rem' }}>
+        <h2>Registro disponible en Windows</h2>
+        <p>La cuenta de la empresa debe crearse desde una instalación autorizada de Car Care.</p>
+        <ThemedButton onClick={onBack || (() => history.back())}>Volver al inicio de sesión</ThemedButton>
+      </div>
+    );
+  }
+
   return (
     <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <h2>Crear cuenta</h2>
+      <h2>Registrar cuenta de la empresa</h2>
       <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: 'auto' }}>
         <input type="text" placeholder="Número de identificación" value={identification}
           onChange={e => setIdentification(e.target.value)} required style={inputStyle} />

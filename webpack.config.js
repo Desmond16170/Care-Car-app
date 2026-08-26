@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 
+const isWeb = process.env.BUILD_TARGET === 'web';
+
 module.exports = {
   entry: './src/index.tsx',
   devtool: 'source-map',
@@ -55,5 +57,5 @@ module.exports = {
     }),
   ],
   mode: 'development',
-  target: 'electron-renderer',
+  target: isWeb ? 'web' : 'electron-renderer',
 };

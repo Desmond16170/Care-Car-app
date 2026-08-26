@@ -8,6 +8,7 @@ import { supabase } from '../services/supabaseClient';
 import { hydrateCloudState } from '../services/cloudSync';
 
 const Login = () => {
+  const isElectron = typeof window !== 'undefined' && typeof (window as any).require === 'function';
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -82,9 +83,11 @@ const Login = () => {
       <p style={{ marginTop: '1rem' }}>
         <TextButton onClick={() => setShowRecovery(true)}>¿Olvidó su contraseña?</TextButton>
       </p>
-      <p>
-        <TextButton onClick={() => setShowRegister(true)}>Crear cuenta</TextButton>
-      </p>
+      {isElectron && (
+        <p>
+          <TextButton onClick={() => setShowRegister(true)}>Registrar empresa</TextButton>
+        </p>
+      )}
 
       {showRecovery && <PasswordRecoveryModal onClose={() => setShowRecovery(false)} />}
     </div>

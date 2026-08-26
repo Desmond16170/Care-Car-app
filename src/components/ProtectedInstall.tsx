@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
-const fs = window.require('fs');
-const path = window.require('path');
-const crypto = window.require('crypto');
-const { dialog } = window.require('@electron/remote');
-const { app } = window.require('electron').remote || window.require('@electron/remote');
-
 const SECRET_KEY = '18293018082JZGTe30';
+const isElectron = typeof window !== 'undefined' && typeof (window as any).require === 'function';
 
 const ProtectedInstall: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isValid, setIsValid] = useState(false);
-  const [licenseChecked, setLicenseChecked] = useState(false);
-
-  const licensePath = path.join(app.getPath('userData'), 'license.json');
+  const [isValid, setIsValid] = useState(!isElectron);
+  const [licenseChecked, setLicenseChecked] = useState(!isElectron);
 
   const verificarLicencia = () => {
+    if (!isElectron) return;
     try {
+      const fs = (window as any).require('fs');
+      const path = (window as any).require('path');
+      const crypto = (window as any).require('crypto');
+      const { app } = (window as any).require('@electron/remote');
+      const licensePath = path.join(app.getPath('userData'), 'license.json');
       if (!fs.existsSync(licensePath)) {
         console.warn('❌ license.json no encontrado');
         setLicenseChecked(true);
@@ -48,6 +47,11 @@ const ProtectedInstall: React.FC<{ children: React.ReactNode }> = ({ children })
   };
 
   const handleLoadLicense = async () => {
+    if (!isElectron) return;
+    const fs = (window as any).require('fs');
+    const path = (window as any).require('path');
+    const { dialog, app } = (window as any).require('@electron/remote');
+    const licensePath = path.join(app.getPath('userData'), 'license.json');
     const result = await dialog.showOpenDialog({
       title: 'Selecciona el archivo de licencia',
       filters: [{ name: 'Licencia', extensions: ['json'] }],

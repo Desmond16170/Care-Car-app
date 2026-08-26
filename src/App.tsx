@@ -13,6 +13,7 @@ import InitialSetup from './pages/InitialSetup';
 import GuideAddVehicle from './pages/GuideAddVehicle';
 import Settings from './pages/Settings';
 import Dashboard from './pages/Dashboard';
+import ResetPassword from './pages/ResetPassword';
 
 const StartRoute = () => {
   const configured = localStorage.getItem('car-care-configured') === 'true';
@@ -38,6 +39,7 @@ const App = () => (
     <AuthProvider>
       <Routes>
         <Route path="/login" element={<PublicLogin />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route element={<RequireAuth />}>
           <Route index element={<StartRoute />} />

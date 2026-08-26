@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Register from './Register';
 import PasswordRecoveryModal from '../components/PasswordRecoveryModal';
-import ThemedButton from '../components/ThemedButton';
-import TextButton from '../components/TextButton';
 import { supabase } from '../services/supabaseClient';
 import { hydrateCloudState } from '../services/cloudSync';
 
@@ -12,32 +10,29 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showRecovery, setShowRecovery] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLoading(true);
     setError('');
-
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
+    const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
     if (authError) {
-      setError('Correo o contraseña incorrectos.');
+      setError('No pudimos iniciar sesión. Revisa el correo y la contraseña.');
       setLoading(false);
       return;
     }
 
     try {
       await hydrateCloudState();
-      navigate('/');
+      navigate('/', { replace: true });
     } catch {
-      setError('La sesión inició, pero no se pudieron descargar los datos.');
+      setError('La sesión inició, pero no se pudieron descargar los datos. Intenta nuevamente.');
     } finally {
       setLoading(false);
     }
@@ -46,51 +41,57 @@ const Login = () => {
   if (showRegister) return <Register onBack={() => setShowRegister(false)} />;
 
   return (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <img
-        src={localStorage.getItem('car-care-logo') || '/logo-taller.png'}
-        alt="Logo Taller"
-        style={{ width: '120px', marginBottom: '1rem' }}
-      />
-      <h2>Bienvenido</h2>
-      <p>Ingresa con la misma cuenta en todos tus dispositivos.</p>
-
-      <form onSubmit={handleLogin} style={{ maxWidth: '300px', margin: 'auto' }}>
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-          style={{ width: '100%', padding: 10, marginBottom: 10 }}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-          minLength={6}
-          style={{ width: '100%', padding: 10, marginBottom: 10 }}
-        />
-        <ThemedButton type="submit" disabled={loading} style={{ marginTop: '1rem', minWidth: 160 }}>
-          {loading ? 'INGRESANDO...' : 'INGRESAR'}
-        </ThemedButton>
-      </form>
-
-      {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
-
-      <p style={{ marginTop: '1rem' }}>
-        <TextButton onClick={() => setShowRecovery(true)}>¿Olvidó su contraseña?</TextButton>
-      </p>
-      {isElectron && (
-        <p>
-          <TextButton onClick={() => setShowRegister(true)}>Registrar empresa</TextButton>
-        </p>
-      )}
-
-      {showRecovery && <PasswordRecoveryModal onClose={() => setShowRecovery(false)} />}
-    </div>
+    <main className="auth-page">
+      <section className="auth-hero" aria-label="Car Care">
+        <div className="auth-hero__content">
+          <span className="auth-brand-mark">CC</span>
+          <p className="eyebrow">GESTIÓN PARA TALLERES</p>
+          <h1>Tu taller, organizado desde cualquier lugar.</h1>
+          <p>Clientes, vehículos y trabajos sincronizados entre la aplicación de Windows y la PWA.</p>
+        </div>
+      </section>
+      <section className="auth-panel">
+        <div className="auth-card">
+          <div className="auth-card__heading">
+            <span className="auth-mobile-mark">CC</span>
+            <p className="eyebrow">ACCESO SEGURO</p>
+            <h2>Bienvenido de nuevo</h2>
+            <p>Ingresa con la cuenta de tu empresa.</p>
+          </div>
+          <form onSubmit={handleLogin} className="auth-form">
+            <div className="field-group">
+              <label htmlFor="login-email">Correo electrónico</label>
+              <input id="login-email" type="email" autoComplete="email" value={email}
+                onChange={(event) => setEmail(event.target.value)} required />
+            </div>
+            <div className="field-group">
+              <div className="field-label-row">
+                <label htmlFor="login-password">Contraseña</label>
+                <button type="button" className="text-action" onClick={() => setShowRecovery(true)}>¿La olvidaste?</button>
+              </div>
+              <div className="password-field">
+                <input id="login-password" type={showPassword ? 'text' : 'password'} autoComplete="current-password"
+                  value={password} onChange={(event) => setPassword(event.target.value)} required minLength={6} />
+                <button type="button" onClick={() => setShowPassword((visible) => !visible)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                  {showPassword ? 'Ocultar' : 'Ver'}
+                </button>
+              </div>
+            </div>
+            {error && <div className="form-error" role="alert">{error}</div>}
+            <button className="primary-action" type="submit" disabled={loading}>{loading ? 'Ingresando…' : 'Ingresar'}</button>
+          </form>
+          {isElectron ? (
+            <p className="auth-card__footer">¿Primera instalación?{' '}
+              <button className="text-action" onClick={() => setShowRegister(true)}>Registrar empresa</button>
+            </p>
+          ) : (
+            <p className="auth-card__notice">Las cuentas nuevas se registran desde una instalación de Windows con licencia.</p>
+          )}
+        </div>
+      </section>
+      {showRecovery && <PasswordRecoveryModal initialEmail={email} onClose={() => setShowRecovery(false)} />}
+    </main>
   );
 };
 

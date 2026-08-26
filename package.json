@@ -1,6 +1,6 @@
 {
   "name": "car-care-app",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Sistema para talleres con sincronización segura en Supabase",
   "main": "main.js",
   "scripts": {

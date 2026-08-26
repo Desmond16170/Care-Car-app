@@ -1,0 +1,31 @@
+name: Care Car Windows installer
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    env:
+      CAR_CARE_SUPABASE_URL: https://raufjvpmtdputixikcml.supabase.co
+      CAR_CARE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_kDB9iGLt-BU9zFRqIFDikA_k-umFmqO
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run dist:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: care-car-windows-installer
+          path: release/*.exe
+          if-no-files-found: error

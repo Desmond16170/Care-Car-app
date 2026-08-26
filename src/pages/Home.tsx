@@ -2,16 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ThemedButton from '../components/ThemedButton';
 import { supabase } from '../lib/supabase';
+import { getModuleConfig, ModuleConfig } from '../lib/modules';
 
 const Home = () => {
   const [userName, setUserName] = useState('');
   const [tallerName, setTallerName] = useState('Care Car');
+  const [modules, setModules] = useState<ModuleConfig>(getModuleConfig());
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const name = localStorage.getItem('car-care-taller-name');
-    if (name) setTallerName(name);
+    const refresh = () => {
+      setTallerName(localStorage.getItem('car-care-taller-name') || 'Care Car');
+      setModules(getModuleConfig());
+    };
+    refresh();
+    window.addEventListener('car-care-modules-changed', refresh as EventListener);
+    window.addEventListener('storage', refresh);
+    return () => {
+      window.removeEventListener('car-care-modules-changed', refresh as EventListener);
+      window.removeEventListener('storage', refresh);
+    };
   }, []);
 
   useEffect(() => {
@@ -64,54 +75,46 @@ const Home = () => {
         <div>
           <div className="cc-hero-kicker">Panel de trabajo</div>
           <h1 className="cc-hero-title">{tallerName}</h1>
-          <p className="cc-hero-copy">
-            Registra, recibe y consulta vehículos con el menor número de pasos posible.
-          </p>
+          <p className="cc-hero-copy">Registra, recibe y consulta vehículos con el menor número de pasos posible.</p>
         </div>
         <div className="cc-user-chip">{userName}</div>
       </div>
 
       <div className="cc-grid cc-action-grid">
-        <button className="cc-action-card" onClick={() => navigate('/tramado')}>
-          <span className="cc-action-label">Recepción</span>
-          <div>
-            <h2 className="cc-action-title">Tramado / recibir vehículo</h2>
-            <p className="cc-action-copy">Documenta entrada, estado, daños, accesorios, firma y entrega.</p>
-          </div>
-        </button>
+        {modules.tramado && (
+          <button className="cc-action-card" onClick={() => navigate('/tramado')}>
+            <span className="cc-action-label">Recepción</span>
+            <div><h2 className="cc-action-title">Tramado / recibir vehículo</h2><p className="cc-action-copy">Documenta entrada, estado, daños, accesorios, firma y entrega.</p></div>
+          </button>
+        )}
 
         <button className="cc-action-card" onClick={() => navigate('/search')}>
           <span className="cc-action-label">Buscar</span>
-          <div>
-            <h2 className="cc-action-title">Abrir un vehículo</h2>
-            <p className="cc-action-copy">Encuentra por placa, marca, modelo, VIN o apodo.</p>
-          </div>
+          <div><h2 className="cc-action-title">Abrir un vehículo</h2><p className="cc-action-copy">Encuentra por placa, marca, modelo, VIN o apodo.</p></div>
         </button>
+
+        {modules.customers && (
+          <button className="cc-action-card" onClick={() => navigate('/customers')}>
+            <span className="cc-action-label">Clientes</span>
+            <div><h2 className="cc-action-title">Abrir directorio</h2><p className="cc-action-copy">Consulta datos, vehículos asociados y visitas al taller.</p></div>
+          </button>
+        )}
 
         <button className="cc-action-card" onClick={() => navigate('/add-vehicle-guided')}>
           <span className="cc-action-label">Nuevo</span>
-          <div>
-            <h2 className="cc-action-title">Registrar vehículo</h2>
-            <p className="cc-action-copy">Empieza por marca y modelo o usa el registro manual.</p>
-          </div>
+          <div><h2 className="cc-action-title">Registrar vehículo</h2><p className="cc-action-copy">Empieza por marca y modelo o usa el registro manual.</p></div>
         </button>
 
-        <button className="cc-action-card" onClick={() => navigate('/dashboard')}>
-          <span className="cc-action-label">Resumen</span>
-          <div>
-            <h2 className="cc-action-title">Ver actividad</h2>
-            <p className="cc-action-copy">Revisa vehículos, mantenimientos y cambios de aceite.</p>
-          </div>
-        </button>
+        {modules.dashboard && (
+          <button className="cc-action-card" onClick={() => navigate('/dashboard')}>
+            <span className="cc-action-label">Resumen</span>
+            <div><h2 className="cc-action-title">Ver actividad</h2><p className="cc-action-copy">Revisa vehículos, mantenimientos y cambios de aceite.</p></div>
+          </button>
+        )}
       </div>
 
       <div style={{ marginTop: '22px', display: 'flex', justifyContent: 'flex-end' }}>
-        <ThemedButton
-          onClick={handleLogout}
-          style={{ width: 'auto', minWidth: '150px', backgroundColor: '#ffffff', color: '#4f5a65', border: '1px solid #dfe4e8' }}
-        >
-          Cerrar sesión
-        </ThemedButton>
+        <ThemedButton onClick={handleLogout} style={{ width: 'auto', minWidth: '150px', backgroundColor: '#ffffff', color: '#4f5a65', border: '1px solid #dfe4e8' }}>Cerrar sesión</ThemedButton>
       </div>
     </section>
   );
